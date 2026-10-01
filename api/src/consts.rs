@@ -2,7 +2,7 @@ use solana_program::{pubkey, pubkey::Pubkey};
 
 //TODO DRUSCILLA - Update these addresses with the correct values
 /// The authority allowed to initialize the program.
-pub const ADMIN_ADDRESS: Pubkey = pubkey!("HBUh9g46wk2X89CvaNN15UmsznP59rh6od1h8JwYAopk");
+pub const ADMIN_ADDRESS: Pubkey = pubkey!("mCYQKi5SWSK4A7K48ux4grVW8Zn2WRUrxY4d5gJNBGD");
 
 /// The decimal precision of the ORE token.
 /// There are 100 billion indivisible units per ORE (called "grams").
@@ -70,7 +70,7 @@ pub const TREASURY: &[u8] = b"vault";
 
 //TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the mint account.
-pub const MINT_ADDRESS: Pubkey = pubkey!("oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp");
+pub const MINT_ADDRESS: Pubkey = pubkey!("84TC6beTFTArdyHhzh9uhC1Pq76fEodw1E4NnNTS9RqC");
 
 /// The address of the sol mint account.
 pub const SOL_MINT: Pubkey = pubkey!("So11111111111111111111111111111111111111112");
@@ -96,26 +96,28 @@ pub const COMPOUND_FEE_PER_TRANSACTION: u64 = 7_000;
 /// The fee paid to the admin for each transaction.
 pub const ADMIN_FEE: u64 = 100; // 1%
 
+//TODO DRUSCILLA - Update these addresses with the correct values
 /// The address to receive the admin fee.
-pub const ADMIN_FEE_COLLECTOR: Pubkey = pubkey!("DyB4Kv6V613gp2LWQTq1dwDYHGKuUEoDHnCouGUtxFiX");
+pub const ADMIN_FEE_COLLECTOR: Pubkey = pubkey!("rdAwqkVrxKaW4U9ADBact1haw7F5DNLLRcH1NWfdBGD");
 
 /// The swap program used for buybacks.
 pub const SWAP_PROGRAM: Pubkey = pubkey!("JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4");
 
 /// The address of the var account.
-pub const VAR_ADDRESS: Pubkey = pubkey!("BWCaDY96Xe4WkFq1M7UiCCRcChsJ3p51L5KrGzhxgm2E");
+// pub const VAR_ADDRESS: Pubkey = pubkey!("BWCaDY96Xe4WkFq1M7UiCCRcChsJ3p51L5KrGzhxgm2E");
 
+//TODO DRUSCILLA - Update these addresses with the correct values
 /// The address which can call the bury and wrap instructions.
-pub const BURY_AUTHORITY: Pubkey = pubkey!("HNWhK5f8RMWBqcA7mXJPaxdTPGrha3rrqUrri7HSKb3T");
+pub const BURY_AUTHORITY: Pubkey = pubkey!("yN7fRmHmbfMbntVQMtCCepjKmWaFxyZHxoxxRDKoBGD");
 
 //TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the board account.
-pub const BOARD_ADDRESS: Pubkey = pubkey!("BrcSxdp1nXFzou1YyDnQJcPNBNHgoypZmTsyKBSLLXzi");
+pub const BOARD_ADDRESS: Pubkey = pubkey!("BWny8qaJLZWzsCg5Erh5AeeEnfT8qvfzNQJQ77NSpJWq");
 
 //TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the treasury account.
-pub const TREASURY_ADDRESS: Pubkey = pubkey!("45db2FSR4mcXdSVVZbKbwojU6uYDpMyhpEi7cC8nHaWG");
+pub const TREASURY_ADDRESS: Pubkey = pubkey!("FGzg9ihT7mkFPfFaL4BGwSZ3e4hX5xKQMMrt7Vg7L9tp");
 
 //TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the config account.
-pub const CONFIG_ADDRESS: Pubkey = pubkey!("9c9X7aDRAF41faiDs94ELjT19UrGnn72wBW9hPsS4Awy");
+pub const CONFIG_ADDRESS: Pubkey = pubkey!("52iRWuupHEdGArESEkrbmyD2TV2X6mibvEBTkbXznJ7M");

@@ -68,7 +68,7 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
 
     // Calculate miner rewards.
     let mut rewards_sol = 0;
-    let mut rewards_ore = 0;
+    let mut rewards_blackgold = 0;
 
     // Get the RNG.
     if let Some(r) = round.rng() {
@@ -99,14 +99,14 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
                 // Calculate ORE rewards.
                 if round.top_miner == SPLIT_ADDRESS {
                     // If round is split, split the reward evenly among all miners.
-                    rewards_ore = ((round.top_miner_reward() as u128
+                    rewards_blackgold = ((round.top_miner_reward() as u128
                         * miner.deployed[winning_square] as u128)
                         / round.deployed[winning_square] as u128)
                         as u64;
                     sol_log(
                         &format!(
-                            "Split rewards: {} ORE",
-                            amount_to_ui_amount(rewards_ore, TOKEN_DECIMALS)
+                            "Split rewards: {} BLACKGOLD",
+                            amount_to_ui_amount(rewards_blackgold, TOKEN_DECIMALS)
                         )
                         .as_str(),
                     );
@@ -117,12 +117,12 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
                         && top_miner_sample
                             < miner.cumulative[winning_square] + miner.deployed[winning_square]
                     {
-                        rewards_ore = round.top_miner_reward();
+                        rewards_blackgold = round.top_miner_reward();
                         round.top_miner = miner.authority;
                         sol_log(
                             &format!(
-                                "Top miner rewards: {} ORE",
-                                amount_to_ui_amount(rewards_ore, TOKEN_DECIMALS)
+                                "Top miner rewards: {} BLACKGOLD",
+                                amount_to_ui_amount(rewards_blackgold, TOKEN_DECIMALS)
                             )
                             .as_str(),
                         );
@@ -137,12 +137,12 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
                         as u64;
                     sol_log(
                         &format!(
-                            "Motherlode rewards: {} ORE",
+                            "Motherlode rewards: {} BLACKGOLD",
                             amount_to_ui_amount(motherload_rewards, TOKEN_DECIMALS)
                         )
                         .as_str(),
                     );
-                    rewards_ore += motherload_rewards;
+                    rewards_blackgold += motherload_rewards;
                 }
             } else {
                 // Calculate returned SOL rewards.
@@ -172,20 +172,20 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
 
     // Checkpoint miner.
     miner.checkpoint_id = round.id;
-    miner.rewards_ore += rewards_ore;
-    miner.lifetime_rewards_ore += rewards_ore;
+    miner.rewards_blackgold += rewards_blackgold;
+    miner.lifetime_rewards_blackgold += rewards_blackgold;
     miner.rewards_sol += rewards_sol;
     miner.lifetime_rewards_sol += rewards_sol;
 
     // Update treasury.
-    treasury.total_unclaimed += rewards_ore;
+    treasury.total_unclaimed += rewards_blackgold;
 
     // Load the automation account if it exists.
     let automation = if !automation_info.data_is_empty() {
         let automation = automation_info
             .as_account_mut::<Automation>(&ore_api::ID)?
             .assert_mut(|a| a.authority == miner.authority)?;
-        automation.total_ore_earned += rewards_ore;
+        automation.total_blackgold_earned += rewards_blackgold;
         Some(automation)
     } else {
         None

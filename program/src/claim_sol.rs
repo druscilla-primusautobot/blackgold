@@ -7,7 +7,7 @@ use steel::*;
 pub fn process_claim_sol(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResult {
     // Load accounts.
     let clock = Clock::get()?;
-    let [signer_info, board_info, miner_info, system_program, ore_program] = accounts else {
+    let [signer_info, board_info, miner_info, system_program, blackgold_program] = accounts else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
     signer_info.is_signer()?;
@@ -17,7 +17,7 @@ pub fn process_claim_sol(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramR
         .as_account_mut::<Miner>(&ore_api::ID)?
         .assert_mut(|m| m.authority == *signer_info.key)?;
     system_program.is_program(&system_program::ID)?;
-    ore_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&ore_api::ID)?;
 
     // Normalize amount.
     let amount = miner.claim_sol(&clock);
@@ -29,7 +29,7 @@ pub fn process_claim_sol(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramR
 
     // Emit claim event.
     program_log(
-        &[board_info.clone(), ore_program.clone()],
+        &[board_info.clone(), blackgold_program.clone()],
         ClaimEvent {
             disc: 4,
             authority: miner.authority,

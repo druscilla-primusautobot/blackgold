@@ -69,10 +69,10 @@ pub fn process_automate(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramRes
         miner.checkpoint_fee = 0;
         miner.checkpoint_id = 0;
         miner.rewards_sol = 0;
-        miner.rewards_ore = 0;
+        miner.rewards_blackgold = 0;
         miner.round_id = 0;
         miner.lifetime_rewards_sol = 0;
-        miner.lifetime_rewards_ore = 0;
+        miner.lifetime_rewards_blackgold = 0;
         miner.auto_return = 1;
         miner
     } else {

@@ -10,7 +10,7 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     let amount = u64::from_le_bytes(args.amount);
 
     // Load accounts.
-    let [signer_info, sender_info, board_info, mint_info, treasury_info, treasury_ore_info, stake_treasury_info, stake_treasury_tokens_info, stake_vesting_info, token_program, ore_program, ore_stake_program] =
+    let [signer_info, sender_info, board_info, mint_info, treasury_info, treasury_blackgold_info, stake_treasury_info, stake_treasury_tokens_info, stake_vesting_info, token_program, blackgold_program, blackgold_stake_program] =
         accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
@@ -26,17 +26,17 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     treasury_info
         .has_address(&TREASURY_ADDRESS)?
         .as_account_mut::<Treasury>(&ore_api::ID)?;
-    treasury_ore_info.as_associated_token_account(treasury_info.key, &MINT_ADDRESS)?;
+    treasury_blackgold_info.as_associated_token_account(treasury_info.key, &MINT_ADDRESS)?;
     token_program.is_program(&spl_token::ID)?;
-    ore_program.is_program(&ore_api::ID)?;
-    ore_stake_program.is_program(&ore_stake_api::ID)?;
+    blackgold_program.is_program(&ore_api::ID)?;
+    blackgold_stake_program.is_program(&ore_stake_api::ID)?;
 
     // Transfer ORE from sender to treasury.
     let amount = sender.amount().min(amount);
     transfer(
         signer_info,
         sender_info,
-        treasury_ore_info,
+        treasury_blackgold_info,
         token_program,
         amount,
     )?;
@@ -47,7 +47,7 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         &ore_stake_api::sdk::distribute(*treasury_info.key, shared_amount),
         &[
             treasury_info.clone(),
-            treasury_ore_info.clone(),
+            treasury_blackgold_info.clone(),
             mint_info.clone(),
             stake_treasury_info.clone(),
             stake_treasury_tokens_info.clone(),
@@ -58,14 +58,14 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         &[TREASURY],
     )?;
     sol_log(&format!(
-        "💰 Shared {} ORE",
+        "💰 Shared {} BLACKGOLD",
         amount_to_ui_amount(shared_amount, TOKEN_DECIMALS)
     ));
 
     // Burn ORE.
     let burn_amount = amount - shared_amount;
     burn_signed(
-        treasury_ore_info,
+        treasury_blackgold_info,
         mint_info,
         treasury_info,
         token_program,
@@ -75,7 +75,7 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
 
     sol_log(
         &format!(
-            "🔥 Buried {} ORE",
+            "🔥 Buried {} BLACKGOLD",
             amount_to_ui_amount(burn_amount, TOKEN_DECIMALS)
         )
         .as_str(),
@@ -84,11 +84,11 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     // Emit event.
     let mint = mint_info.as_mint()?;
     program_log(
-        &[board_info.clone(), ore_program.clone()],
+        &[board_info.clone(), blackgold_program.clone()],
         BuryEvent {
             disc: 1,
-            ore_buried: burn_amount,
-            ore_shared: shared_amount,
+            blackgold_buried: burn_amount,
+            blackgold_shared: shared_amount,
             sol_amount: 0,
             new_circulating_supply: mint.supply(),
             ts: Clock::get()?.unix_timestamp,

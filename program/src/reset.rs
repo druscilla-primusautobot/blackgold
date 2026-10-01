@@ -10,11 +10,11 @@ use steel::*;
 pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResult {
     // Load accounts.
     let clock = Clock::get()?;
-    let (ore_accounts, other_accounts) = accounts.split_at(14);
-    sol_log(&format!("Ore accounts: {:?}", ore_accounts.len()).to_string());
+    let (blackgold_accounts, other_accounts) = accounts.split_at(14);
+    sol_log(&format!("BlackGold accounts: {:?}", blackgold_accounts.len()).to_string());
     sol_log(&format!("Other accounts: {:?}", other_accounts.len()).to_string());
-    let [signer_info, board_info, config_info, fee_collector_info, mint_info, round_info, round_next_info, top_miner_info, treasury_info, treasury_tokens_info, system_program, token_program, ore_program, slot_hashes_sysvar] =
-        ore_accounts
+    let [signer_info, board_info, config_info, fee_collector_info, mint_info, round_info, round_next_info, top_miner_info, treasury_info, treasury_tokens_info, system_program, token_program, blackgold_program, slot_hashes_sysvar] =
+        blackgold_accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
@@ -43,13 +43,13 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     treasury_tokens_info.as_associated_token_account(&treasury_info.key, &mint_info.key)?;
     system_program.is_program(&system_program::ID)?;
     token_program.is_program(&spl_token::ID)?;
-    ore_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&ore_api::ID)?;
     slot_hashes_sysvar.is_sysvar(&sysvar::slot_hashes::ID)?;
 
     // Open next round account.
     create_program_account::<Round>(
         round_next_info,
-        ore_program,
+        blackgold_program,
         signer_info,
         &ore_api::ID,
         &[ROUND, &(board.round_id + 1).to_le_bytes()],
@@ -104,7 +104,7 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
 
         // Emit event.
         program_log(
-            &[board_info.clone(), ore_program.clone()],
+            &[board_info.clone(), blackgold_program.clone()],
             ResetEvent {
                 disc: 0,
                 round_id: round.id,
@@ -144,9 +144,9 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
 
     // Calculate mint amounts.
     let mut mint_supply = mint.supply();
-    let mint_amount = MAX_SUPPLY.saturating_sub(mint_supply).min(ONE_ORE);
+    let mint_amount = MAX_SUPPLY.saturating_sub(mint_supply).min(ONE_BLACKGOLD);
     mint_supply += mint_amount;
-    let motherlode_mint_amount = MAX_SUPPLY.saturating_sub(mint_supply).min(ONE_ORE / 5);
+    let motherlode_mint_amount = MAX_SUPPLY.saturating_sub(mint_supply).min(ONE_BLACKGOLD / 5);
     let total_mint_amount = mint_amount + motherlode_mint_amount;
 
     // Reward +1 ORE for the winning miner(s).
@@ -215,7 +215,7 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
 
     // Emit event.
     program_log(
-        &[board_info.clone(), ore_program.clone()],
+        &[board_info.clone(), blackgold_program.clone()],
         ResetEvent {
             disc: 0,
             round_id: round.id,
@@ -239,7 +239,7 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     // Update production cost EMA (lamports per whole ORE).
     // Protocol perspective: total_vaulted SOL / total ORE minted this round.
     if total_mint_amount > 0 {
-        let production_cost = ((round.total_vaulted as u128) * (ONE_ORE as u128)
+        let production_cost = ((round.total_vaulted as u128) * (ONE_BLACKGOLD as u128)
             / (total_mint_amount as u128)) as u64;
         const EMA_WINDOW: u128 = 20;
         board.production_cost_ema = if board.production_cost_ema == 0 {

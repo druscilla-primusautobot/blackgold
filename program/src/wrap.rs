@@ -11,7 +11,7 @@ use steel::*;
 const LIQ_PCT: u64 = 10;
 
 /// The liq manager address.
-const LIQ_MANAGER: Pubkey = pubkey!("Ag3AkRaEbqu3yEVibhEQsgEAxoLrC2MyEcxSEXRxfCuu");
+const LIQ_MANAGER: Pubkey = pubkey!("PcKJmf4dXbT52bNA6Byw5EpjaP6XPs8ZUXCFLTBQBGD");
 
 /// Send SOL from the treasury to the WSOL account.
 pub fn process_wrap(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult {
@@ -20,7 +20,7 @@ pub fn process_wrap(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     let amount = u64::from_le_bytes(args.amount);
 
     // Load accounts.
-    let [signer_info, board_info, _config_info, manager_info, treasury_info, treasury_sol_info, system_program, ore_program] =
+    let [signer_info, board_info, _config_info, manager_info, treasury_info, treasury_sol_info, system_program, blackgold_program] =
         accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
@@ -33,7 +33,7 @@ pub fn process_wrap(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         .is_writable()?
         .as_associated_token_account(treasury_info.key, &SOL_MINT)?;
     system_program.is_program(&system_program::ID)?;
-    ore_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&ore_api::ID)?;
 
     // Get amount
     let balance = treasury_info.lamports() - Rent::get()?.minimum_balance(Treasury::SIZE);
@@ -60,7 +60,7 @@ pub fn process_wrap(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     // Emit liq event.
     let ts = Clock::get()?.unix_timestamp;
     program_log(
-        &[board_info.clone(), ore_program.clone()],
+        &[board_info.clone(), blackgold_program.clone()],
         LiqEvent {
             disc: 3,
             sol_amount: liq_amount,

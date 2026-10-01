@@ -11,11 +11,11 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     let mask = u32::from_le_bytes(args.squares);
     // Load accounts.
     let clock = Clock::get()?;
-    let (ore_accounts, entropy_accounts) = accounts.split_at(10);
-    sol_log(&format!("Ore accounts: {:?}", ore_accounts.len()).to_string());
+    let (blackgold_accounts, entropy_accounts) = accounts.split_at(10);
+    sol_log(&format!("BlackGold accounts: {:?}", blackgold_accounts.len()).to_string());
     sol_log(&format!("Entropy accounts: {:?}", entropy_accounts.len()).to_string());
-    let [signer_info, authority_info, automation_info, board_info, config_info, miner_info, round_info, treasury_info, system_program, ore_program] =
-        ore_accounts
+    let [signer_info, authority_info, automation_info, board_info, config_info, miner_info, round_info, treasury_info, system_program, blackgold_program] =
+        blackgold_accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
@@ -77,8 +77,8 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
             .assert_mut(|a| a.authority == *authority_info.key)?;
 
         // Conditional deploy.
-        let max_motherlode = automation.conditions.max_motherlode as u64 * ONE_ORE;
-        let min_motherlode = automation.conditions.min_motherlode as u64 * ONE_ORE;
+        let max_motherlode = automation.conditions.max_motherlode as u64 * ONE_BLACKGOLD;
+        let min_motherlode = automation.conditions.min_motherlode as u64 * ONE_BLACKGOLD;
         if treasury.motherlode > max_motherlode || treasury.motherlode < min_motherlode {
             return Ok(());
         }
@@ -228,11 +228,11 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
         miner.deployed = [0; 25];
         miner.cumulative = [0; 25];
         miner.rewards_sol = 0;
-        miner.rewards_ore = 0;
+        miner.rewards_blackgold = 0;
         miner.round_id = 0;
         miner.checkpoint_id = 0;
         miner.lifetime_rewards_sol = 0;
-        miner.lifetime_rewards_ore = 0;
+        miner.lifetime_rewards_blackgold = 0;
         miner.auto_return = 1;
         miner
     } else {
@@ -364,7 +364,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
 
     // Log the deploy event.
     program_log(
-        &[board_info.clone(), ore_program.clone()],
+        &[board_info.clone(), blackgold_program.clone()],
         DeployEvent {
             disc: 2,
             authority: miner.authority,

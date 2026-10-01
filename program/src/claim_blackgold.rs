@@ -14,7 +14,7 @@ pub fn process_claim_blackgold(accounts: &[AccountInfo<'_>], data: &[u8]) -> Pro
 
     // Load accounts.
     let clock = Clock::get()?;
-    let [signer_info, board_info, miner_info, mint_info, recipient_info, treasury_info, treasury_tokens_info, system_program, token_program, associated_token_program, ore_program] =
+    let [signer_info, board_info, miner_info, mint_info, recipient_info, treasury_info, treasury_tokens_info, system_program, token_program, associated_token_program, blackgold_program] =
         accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
@@ -34,7 +34,7 @@ pub fn process_claim_blackgold(accounts: &[AccountInfo<'_>], data: &[u8]) -> Pro
     system_program.is_program(&system_program::ID)?;
     token_program.is_program(&spl_token::ID)?;
     associated_token_program.is_program(&spl_associated_token_account::ID)?;
-    ore_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&ore_api::ID)?;
 
     // Load recipient.
     if recipient_info.data_is_empty() {
@@ -52,11 +52,11 @@ pub fn process_claim_blackgold(accounts: &[AccountInfo<'_>], data: &[u8]) -> Pro
     }
 
     // Normalize amount.
-    let (amount, fee) = miner.claim_ore(&clock, treasury, bps);
+    let (amount, fee) = miner.claim_blackgold(&clock, treasury, bps);
 
     sol_log(
         &format!(
-            "Claiming {} ORE. Paid {} ORE in refining fees.",
+            "Claiming {} BLACKGOLD. Paid {} BLACKGOLD in refining fees.",
             amount_to_ui_amount(amount, TOKEN_DECIMALS),
             amount_to_ui_amount(fee, TOKEN_DECIMALS)
         )
@@ -75,7 +75,7 @@ pub fn process_claim_blackgold(accounts: &[AccountInfo<'_>], data: &[u8]) -> Pro
 
     // Emit claim event.
     program_log(
-        &[board_info.clone(), ore_program.clone()],
+        &[board_info.clone(), blackgold_program.clone()],
         ClaimEvent {
             disc: 4,
             authority: miner.authority,
