@@ -5,10 +5,10 @@ use spl_token::amount_to_ui_amount;
 use steel::*;
 
 /// Claims a block reward.
-pub fn process_claim_ore(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult {
+pub fn process_claim_blackgold(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult {
     // Load data.
     let mut bps = DENOMINATOR_BPS;
-    if let Ok(args) = ClaimORE::try_from_bytes(data) {
+    if let Ok(args) = ClaimBLACKGOLD::try_from_bytes(data) {
         bps = u64::from_le_bytes(args.bps);
     }
 

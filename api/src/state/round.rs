@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use solana_program::keccak;
 use steel::*;
 
-use crate::state::{round_pda, OreAccount};
+use crate::state::{round_pda, BlackGoldAccount};
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable, Serialize, Deserialize)]
@@ -164,7 +164,7 @@ impl Round {
     }
 }
 
-account!(OreAccount, Round);
+account!(BlackGoldAccount, Round);
 
 #[cfg(test)]
 mod tests {

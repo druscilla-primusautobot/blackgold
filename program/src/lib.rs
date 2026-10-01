@@ -39,22 +39,22 @@ pub fn process_instruction(
 
     match ix {
         // Miner
-        OreInstruction::Automate => process_automate(accounts, data)?,
-        OreInstruction::Checkpoint => process_checkpoint(accounts, data)?,
-        OreInstruction::ClaimSOL => process_claim_sol(accounts, data)?,
-        OreInstruction::ClaimORE => process_claim_ore(accounts, data)?,
-        OreInstruction::Deploy => process_deploy(accounts, data)?,
-        OreInstruction::Log => process_log(accounts, data)?,
-        OreInstruction::Close => process_close(accounts, data)?,
-        OreInstruction::Reset => process_reset(accounts, data)?,
+        BlackGoldInstruction::Automate => process_automate(accounts, data)?,
+        BlackGoldInstruction::Checkpoint => process_checkpoint(accounts, data)?,
+        BlackGoldInstruction::ClaimSOL => process_claim_sol(accounts, data)?,
+        BlackGoldInstruction::ClaimBLACKGOLD => process_claim_blackgold(accounts, data)?,
+        BlackGoldInstruction::Deploy => process_deploy(accounts, data)?,
+        BlackGoldInstruction::Log => process_log(accounts, data)?,
+        BlackGoldInstruction::Close => process_close(accounts, data)?,
+        BlackGoldInstruction::Reset => process_reset(accounts, data)?,
 
         // Admin
-        OreInstruction::Buyback => process_buyback(accounts, data)?,
-        OreInstruction::Bury => process_bury(accounts, data)?,
-        OreInstruction::Wrap => process_wrap(accounts, data)?,
-        OreInstruction::NewVar => process_new_var(accounts, data)?,
-        OreInstruction::UpdateProtocolConfig => process_update_protocol_config(accounts, data)?,
-        OreInstruction::Liq => return Err(ProgramError::InvalidInstructionData),
+        BlackGoldInstruction::Buyback => process_buyback(accounts, data)?,
+        BlackGoldInstruction::Bury => process_bury(accounts, data)?,
+        BlackGoldInstruction::Wrap => process_wrap(accounts, data)?,
+        BlackGoldInstruction::NewVar => process_new_var(accounts, data)?,
+        BlackGoldInstruction::UpdateProtocolConfig => process_update_protocol_config(accounts, data)?,
+        BlackGoldInstruction::Liq => return Err(ProgramError::InvalidInstructionData),
     }
 
     Ok(())
@@ -63,10 +63,10 @@ pub fn process_instruction(
 entrypoint!(process_instruction);
 
 security_txt! {
-    name: "ORE",
-    project_url: "https://ore.com",
-    contacts: "email:hardhatchad@gmail.com,discord:hardhatchad",
-    policy: "https://github.com/regolith-labs/ore/blob/master/SECURITY.md",
+    name: "BLACKGOLD",
+    project_url: "https://blackgold.supply",
+    contacts: "email:druscilla2024@gmail.com",
+    policy: "https://github.com/druscilla-primusautobot/blackgold/blob/master/SECURITY.md",
     preferred_languages: "en",
-    source_code: "https://github.com/regolith-labs/ore"
+    source_code: "https://github.com/druscilla-primusautobot/blackgold"
 }

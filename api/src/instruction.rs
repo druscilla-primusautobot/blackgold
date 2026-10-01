@@ -7,7 +7,7 @@ pub enum OreInstruction {
     Automate = 0,
     Checkpoint = 2,
     ClaimSOL = 3,
-    ClaimORE = 4,
+    ClaimBLACKGOLD = 4,
     Close = 5,
     Deploy = 6,
     Log = 8,
@@ -57,7 +57,7 @@ pub struct ClaimSOL {}
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]
-pub struct ClaimORE {
+pub struct ClaimBLACKGOLD {
     pub bps: [u8; 8],
 }
 
@@ -136,7 +136,7 @@ instruction!(OreInstruction, Automate);
 instruction!(OreInstruction, Close);
 instruction!(OreInstruction, Checkpoint);
 instruction!(OreInstruction, ClaimSOL);
-instruction!(OreInstruction, ClaimORE);
+instruction!(OreInstruction, ClaimBLACKGOLD);
 instruction!(OreInstruction, Deploy);
 instruction!(OreInstruction, Log);
 instruction!(OreInstruction, Wrap);

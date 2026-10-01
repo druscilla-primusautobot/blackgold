@@ -2,7 +2,7 @@ use ore_mint_api::consts::ONE_ORE;
 use serde::{Deserialize, Serialize};
 use steel::*;
 
-use crate::state::{automation_pda, OreAccount};
+use crate::state::{automation_pda, BlackGoldAccount};
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable, Serialize, Deserialize)]
@@ -36,7 +36,7 @@ pub struct Automation {
     pub total_sol_spent: u64,
 
     /// The total ORE earned by this automation.
-    pub total_ore_earned: u64,
+    pub total_blackgold_earned: u64,
 
     /// Conditions that must be met for the automation to deploy.
     pub conditions: AutomationConditions,
@@ -136,12 +136,12 @@ impl Automation {
     }
 
     pub fn production_cost(&self) -> u64 {
-        if self.total_ore_earned == 0 {
+        if self.total_oil_earned == 0 {
             return 0;
         }
-        ((self.total_sol_spent as u128) * (ONE_ORE as u128) / (self.total_ore_earned as u128))
+        ((self.total_sol_spent as u128) * (ONE_OIL as u128) / (self.total_oil_earned as u128))
             as u64
     }
 }
 
-account!(OreAccount, Automation);
+account!(BlackGoldAccount, Automation);

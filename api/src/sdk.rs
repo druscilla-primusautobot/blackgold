@@ -98,7 +98,7 @@ pub fn claim_ore(signer: Pubkey, bps: u64) -> Instruction {
             AccountMeta::new_readonly(spl_associated_token_account::ID, false),
             AccountMeta::new_readonly(crate::ID, false),
         ],
-        data: ClaimORE {
+        data: ClaimBLACKGOLD {
             bps: bps.to_le_bytes(),
         }
         .to_bytes(),

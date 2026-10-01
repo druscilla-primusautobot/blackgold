@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use steel::*;
 
-use crate::state::{board_pda, OreAccount};
+use crate::state::{board_pda, BlackGoldAccount};
 
 /// BoardV4 is a singleton account tracking global game state.
 #[repr(C)]
@@ -26,4 +26,4 @@ impl Board {
     }
 }
 
-account!(OreAccount, Board);
+account!(BlackGoldAccount, Board);

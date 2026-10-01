@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use steel::*;
 
-use crate::state::{config_pda, OreAccount};
+use crate::state::{config_pda, BlackGoldAccount};
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable, Serialize, Deserialize)]
@@ -57,4 +57,4 @@ impl Config {
     }
 }
 
-account!(OreAccount, Config);
+account!(BlackGoldAccount, Config);

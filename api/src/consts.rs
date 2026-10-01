@@ -1,5 +1,6 @@
 use solana_program::{pubkey, pubkey::Pubkey};
 
+//TODO DRUSCILLA - Update these addresses with the correct values
 /// The authority allowed to initialize the program.
 pub const ADMIN_ADDRESS: Pubkey = pubkey!("HBUh9g46wk2X89CvaNN15UmsznP59rh6od1h8JwYAopk");
 
@@ -8,7 +9,7 @@ pub const ADMIN_ADDRESS: Pubkey = pubkey!("HBUh9g46wk2X89CvaNN15UmsznP59rh6od1h8
 pub const TOKEN_DECIMALS: u8 = 11;
 
 /// One ORE token, denominated in indivisible units.
-pub const ONE_ORE: u64 = 10u64.pow(TOKEN_DECIMALS as u32);
+pub const ONE_BLACKGOLD: u64 = 10u64.pow(TOKEN_DECIMALS as u32);
 
 /// The duration of one minute, in seconds.
 pub const ONE_MINUTE: i64 = 60;
@@ -38,10 +39,10 @@ pub const ONE_DAY_SLOTS: u64 = 24 * ONE_HOUR_SLOTS;
 pub const ONE_WEEK_SLOTS: u64 = 7 * ONE_DAY_SLOTS;
 
 /// The seed of the automation account PDA.
-pub const AUTOMATION: &[u8] = b"automation";
+pub const AUTOMATION: &[u8] = b"drill";
 
 /// The seed of the board account PDA.
-pub const BOARD: &[u8] = b"board";
+pub const BOARD: &[u8] = b"node";
 
 /// The seed of the stats account PDA.
 pub const STATS: &[u8] = b"stats";
@@ -50,7 +51,7 @@ pub const STATS: &[u8] = b"stats";
 pub const CONFIG: &[u8] = b"config";
 
 /// The seed of the miner account PDA.
-pub const MINER: &[u8] = b"miner";
+pub const MINER: &[u8] = b"driller";
 
 /// The seed of the seeker account PDA.
 pub const SEEKER: &[u8] = b"seeker";
@@ -62,11 +63,12 @@ pub const SQUARE: &[u8] = b"square";
 pub const STAKE: &[u8] = b"stake";
 
 /// The seed of the round account PDA.
-pub const ROUND: &[u8] = b"round";
+pub const ROUND: &[u8] = b"cycle";
 
 /// The seed of the treasury account PDA.
-pub const TREASURY: &[u8] = b"treasury";
+pub const TREASURY: &[u8] = b"vault";
 
+//TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the mint account.
 pub const MINT_ADDRESS: Pubkey = pubkey!("oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp");
 
@@ -106,11 +108,14 @@ pub const VAR_ADDRESS: Pubkey = pubkey!("BWCaDY96Xe4WkFq1M7UiCCRcChsJ3p51L5KrGzh
 /// The address which can call the bury and wrap instructions.
 pub const BURY_AUTHORITY: Pubkey = pubkey!("HNWhK5f8RMWBqcA7mXJPaxdTPGrha3rrqUrri7HSKb3T");
 
+//TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the board account.
 pub const BOARD_ADDRESS: Pubkey = pubkey!("BrcSxdp1nXFzou1YyDnQJcPNBNHgoypZmTsyKBSLLXzi");
 
+//TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the treasury account.
 pub const TREASURY_ADDRESS: Pubkey = pubkey!("45db2FSR4mcXdSVVZbKbwojU6uYDpMyhpEi7cC8nHaWG");
 
+//TODO DRUSCILLA - Update these addresses with the correct values
 /// The address of the config account.
 pub const CONFIG_ADDRESS: Pubkey = pubkey!("9c9X7aDRAF41faiDs94ELjT19UrGnn72wBW9hPsS4Awy");

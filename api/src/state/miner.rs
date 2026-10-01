@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 use steel::*;
 
-use crate::state::{miner_pda, OreAccount, Treasury, DENOMINATOR_BPS};
+use crate::state::{miner_pda, BlackGoldAccount, Treasury, DENOMINATOR_BPS};
+
+//// TODO DRUSCILLA
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable, Serialize, Deserialize)]
@@ -41,21 +43,21 @@ pub struct Miner {
 
     /// The amount of ORE this miner has earned from refining fees and may claim.
     /// TODO: Rename to ore_refined.
-    pub refined_ore: u64,
+    pub refined_blackgold: u64,
 
     /// The amount of ORE this miner has mined and may claim.
     /// TODO: Rename to ore_unrefined.
-    pub rewards_ore: u64,
+    pub rewards_blackgold: u64,
 
     /// The last time this miner claimed ORE rewards.
-    pub last_claim_ore_at: i64,
+    pub last_claim_blackgold_at: i64,
 
     /// The last time this miner claimed SOL rewards.
     pub last_claim_sol_at: i64,
 
     /// The total amount of ORE this miner has mined across all blocks.
     /// TODO: Rename to lifetime_rewards_ore.
-    pub lifetime_rewards_ore: u64,
+    pub lifetime_rewards_blackgold: u64,
 
     /// The total amount of SOL this miner has deployed across all rounds.
     pub lifetime_deployed: u64,
@@ -70,21 +72,21 @@ impl Miner {
         miner_pda(self.authority)
     }
 
-    pub fn claim_ore(&mut self, clock: &Clock, treasury: &mut Treasury, bps: u64) -> (u64, u64) {
+    pub fn claim_blackgold(&mut self, clock: &Clock, treasury: &mut Treasury, bps: u64) -> (u64, u64) {
         self.update_rewards(treasury);
 
         // Compute % claimable
         // bps = basis points, so 10000 == 100%
         let bps = bps.min(DENOMINATOR_BPS);
-        let claim_refined = (self.refined_ore * bps) / DENOMINATOR_BPS;
-        let claim_rewards = (self.rewards_ore * bps) / DENOMINATOR_BPS;
+        let claim_refined = (self.refined_blackgold * bps) / DENOMINATOR_BPS;
+        let claim_rewards = (self.rewards_blackgold * bps) / DENOMINATOR_BPS;
 
         // Withdraw amounts
-        self.refined_ore -= claim_refined;
-        self.rewards_ore -= claim_rewards;
+        self.refined_blackgold -= claim_refined;
+        self.rewards_blackgold -= claim_rewards;
         treasury.total_refined -= claim_refined;
         treasury.total_unclaimed -= claim_rewards;
-        self.last_claim_ore_at = clock.unix_timestamp;
+        self.last_claim_blackgold_at = clock.unix_timestamp;
 
         // Apply 10% fee on unrefined portion (rewards_ore)
         let mut fee = 0;
@@ -115,9 +117,9 @@ impl Miner {
             if accumulated_rewards < Numeric::ZERO {
                 panic!("Accumulated rewards is negative");
             }
-            let personal_rewards = accumulated_rewards * Numeric::from_u64(self.rewards_ore);
-            self.refined_ore += personal_rewards.to_u64();
-            self.lifetime_rewards_ore += personal_rewards.to_u64();
+            let personal_rewards = accumulated_rewards * Numeric::from_u64(self.rewards_blackgold);
+            self.refined_blackgold += personal_rewards.to_u64();
+            self.lifetime_rewards_blackgold += personal_rewards.to_u64();
         }
 
         // Update this miner account's last seen rewards factor.
@@ -125,4 +127,4 @@ impl Miner {
     }
 }
 
-account!(OreAccount, Miner);
+account!(BlackGoldAccount, Miner);
