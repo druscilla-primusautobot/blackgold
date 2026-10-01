@@ -1,5 +1,5 @@
 [package]
-name = "ore-program"
+name = "blackgold-program"
 description.workspace = true
 version.workspace = true
 edition.workspace = true
@@ -12,7 +12,7 @@ keywords.workspace = true
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "ore"
+name = "blackgold"
 
 [features]
 default = []
