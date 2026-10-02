@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use solana_program::log::sol_log;
 use spl_token::amount_to_ui_amount;
 use steel::*;
@@ -21,15 +21,15 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         .as_associated_token_account(&signer_info.key, &MINT_ADDRESS)?;
     board_info
         .has_address(&BOARD_ADDRESS)?
-        .as_account_mut::<Board>(&ore_api::ID)?;
+        .as_account_mut::<Board>(&blackgold_api::ID)?;
     mint_info.has_address(&MINT_ADDRESS)?.as_mint()?;
     treasury_info
         .has_address(&TREASURY_ADDRESS)?
-        .as_account_mut::<Treasury>(&ore_api::ID)?;
+        .as_account_mut::<Treasury>(&blackgold_api::ID)?;
     treasury_blackgold_info.as_associated_token_account(treasury_info.key, &MINT_ADDRESS)?;
     token_program.is_program(&spl_token::ID)?;
-    blackgold_program.is_program(&ore_api::ID)?;
-    blackgold_stake_program.is_program(&ore_stake_api::ID)?;
+    blackgold_program.is_program(&blackgold_api::ID)?;
+    blackgold_stake_program.is_program(&blackgold_stake_api::ID)?;
 
     // Transfer ORE from sender to treasury.
     let amount = sender.amount().min(amount);
@@ -44,7 +44,7 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     // Share 10% of buyback ORE with stakers
     let shared_amount = amount / 10;
     invoke_signed(
-        &ore_stake_api::sdk::distribute(*treasury_info.key, shared_amount),
+        &blackgold_stake_api::sdk::distribute(*treasury_info.key, shared_amount),
         &[
             treasury_info.clone(),
             treasury_blackgold_info.clone(),
@@ -54,7 +54,7 @@ pub fn process_bury(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
             stake_vesting_info.clone(),
             token_program.clone(),
         ],
-        &ore_api::ID,
+        &blackgold_api::ID,
         &[TREASURY],
     )?;
     sol_log(&format!(

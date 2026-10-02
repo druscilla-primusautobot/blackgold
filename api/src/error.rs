@@ -2,7 +2,7 @@ use steel::*;
 
 #[derive(Debug, Error, Clone, Copy, PartialEq, Eq, IntoPrimitive)]
 #[repr(u32)]
-pub enum OreError {
+pub enum BlackGoldError {
     #[error("Amount too small")]
     AmountTooSmall = 0,
 
@@ -13,4 +13,4 @@ pub enum OreError {
     InvalidExecutor = 2,
 }
 
-error!(OreError);
+error!(BlackGoldError);

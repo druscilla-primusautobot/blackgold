@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use steel::*;
 
 /// Creates a new var account.
@@ -18,13 +18,13 @@ pub fn process_new_var(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResu
     signer_info.is_signer()?;
     let board = board_info
         .has_address(&BOARD_ADDRESS)?
-        .as_account_mut::<Board>(&ore_api::ID)?;
+        .as_account_mut::<Board>(&blackgold_api::ID)?;
     config_info
         .has_address(&CONFIG_ADDRESS)?
-        .as_account_mut::<Config>(&ore_api::ID)?
+        .as_account_mut::<Config>(&blackgold_api::ID)?
         .assert_mut_err(
             |c| c.protocol.authority == *signer_info.key,
-            OreError::NotAuthorized.into(),
+            BlackgoldError::NotAuthorized.into(),
         )?;
     entropy_program.is_program(&entropy_api::ID)?;
     system_program.is_program(&system_program::ID)?;

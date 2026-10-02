@@ -9,7 +9,7 @@ use jup_swap::{
     transaction_config::{DynamicSlippageSettings, TransactionConfig},
     JupiterSwapApiClient,
 };
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use solana_account_decoder::UiAccountEncoding;
 use solana_client::{
     client_error::{reqwest::StatusCode, ClientErrorKind},
@@ -247,7 +247,7 @@ async fn new_var(
     let board_address = board_pda().0;
     let var_address = entropy_api::state::var_pda(board_address, 0).0;
     println!("Var address: {}", var_address);
-    let ix = ore_api::sdk::new_var(payer.pubkey(), provider, 0, commit.to_bytes(), samples);
+    let ix = blackgold_api::sdk::new_var(payer.pubkey(), provider, 0, commit.to_bytes(), samples);
     submit_transaction(rpc, payer, &[ix]).await?;
     Ok(())
 }
@@ -283,11 +283,11 @@ async fn ata(
 }
 
 async fn keys() -> Result<(), anyhow::Error> {
-    let treasury_address = ore_api::state::treasury_pda().0;
-    let config_address = ore_api::state::config_pda().0;
-    let board_address = ore_api::state::board_pda().0;
+    let treasury_address = blackgold_api::state::treasury_pda().0;
+    let config_address = blackgold_api::state::config_pda().0;
+    let board_address = blackgold_api::state::board_pda().0;
     let address = pubkey!("pqspJ298ryBjazPAr95J9sULCVpZe3HbZTWkbC1zrkS");
-    let miner_address = ore_api::state::miner_pda(address).0;
+    let miner_address = blackgold_api::state::miner_pda(address).0;
     let round = round_pda(31460).0;
     println!("Round: {}", round);
     println!("Treasury: {}", treasury_address);
@@ -310,8 +310,8 @@ async fn claim(
 
     // Claim rewards.
     let mut ixs = vec![];
-    ixs.push(ore_api::sdk::claim_sol(payer.pubkey()));
-    ixs.push(ore_api::sdk::claim_ore(payer.pubkey(), DENOMINATOR_BPS));
+    ixs.push(blackgold_api::sdk::claim_sol(payer.pubkey()));
+    ixs.push(blackgold_api::sdk::claim_blackgold(payer.pubkey(), DENOMINATOR_BPS));
 
     // Transfer rewards to miner.
     if let Ok(recipient) = recipient {
@@ -322,7 +322,7 @@ async fn claim(
                 &recipient,
                 &authority,
                 &[&authority],
-                miner.rewards_ore + miner.refined_ore,
+                miner.rewards_blackgold + miner.refined_blackgold,
             )?);
         }
     }
@@ -367,7 +367,7 @@ async fn buyback(
     };
 
     // GET /swap/instructions
-    let treasury_address = ore_api::state::treasury_pda().0;
+    let treasury_address = blackgold_api::state::treasury_pda().0;
     let response = jupiter_swap_api_client
         .swap_instructions(&SwapRequest {
             user_public_key: treasury_address,
@@ -393,8 +393,8 @@ async fn buyback(
 
     // Build transaction.
     let manager = pubkey!("Ag3AkRaEbqu3yEVibhEQsgEAxoLrC2MyEcxSEXRxfCuu");
-    let wrap_ix = ore_api::sdk::wrap(payer.pubkey(), manager, u64::MAX);
-    let buyback_ix = ore_api::sdk::buyback(
+    let wrap_ix = blackgold_api::sdk::wrap(payer.pubkey(), manager, u64::MAX);
+    let buyback_ix = blackgold_api::sdk::buyback(
         payer.pubkey(),
         &response.swap_instruction.accounts,
         &response.swap_instruction.data,
@@ -430,14 +430,14 @@ pub async fn get_address_lookup_table_accounts(
     Ok(accounts)
 }
 
-pub const ORE_VAR_ADDRESS: Pubkey = pubkey!("BWCaDY96Xe4WkFq1M7UiCCRcChsJ3p51L5KrGzhxgm2E");
+pub const BLACKGOLD_VAR_ADDRESS: Pubkey = pubkey!("BWCaDY96Xe4WkFq1M7UiCCRcChsJ3p51L5KrGzhxgm2E");
 
 async fn reset(
     rpc: &RpcClient,
     payer: &solana_sdk::signer::keypair::Keypair,
 ) -> Result<(), anyhow::Error> {
     let board = get_board(rpc).await?;
-    let mut var = get_var(rpc, ORE_VAR_ADDRESS).await?;
+    let mut var = get_var(rpc, BLACKGOLD_VAR_ADDRESS).await?;
 
     let hash = solana_program::keccak::hashv(&[&var.end_at.to_le_bytes()]);
     var.slot_hash = hash.to_bytes();
@@ -447,7 +447,7 @@ async fn reset(
     println!("Var: {:?}", var);
 
     let client = reqwest::Client::new();
-    let url = format!("https://entropy-api.onrender.com/var/{ORE_VAR_ADDRESS}/seed");
+    let url = format!("https://entropy-api.onrender.com/var/{BLACKGOLD_VAR_ADDRESS}/seed");
     let response = client
         .get(url)
         .send()
@@ -463,9 +463,9 @@ async fn reset(
     println!("Top miner: {}", top_miner);
 
     let config = get_config(rpc).await?;
-    let sample_ix = entropy_api::sdk::sample(payer.pubkey(), ORE_VAR_ADDRESS);
-    let reveal_ix = entropy_api::sdk::reveal(payer.pubkey(), ORE_VAR_ADDRESS, response.seed);
-    let reset_ix = ore_api::sdk::reset(
+    let sample_ix = entropy_api::sdk::sample(payer.pubkey(), BLACKGOLD_VAR_ADDRESS);
+    let reveal_ix = entropy_api::sdk::reveal(payer.pubkey(), BLACKGOLD_VAR_ADDRESS, response.seed);
+    let reset_ix = blackgold_api::sdk::reset(
         payer.pubkey(),
         ADMIN_FEE_COLLECTOR,
         board.round_id,
@@ -518,7 +518,7 @@ async fn calculate_top_miner(
 
     // Fetch all miners for this round (round_id is at offset 512 in Miner account)
     let filter = RpcFilterType::Memcmp(Memcmp::new_base58_encoded(664, &round_id.to_le_bytes()));
-    let miners = get_program_accounts::<Miner>(rpc, ore_api::ID, vec![filter]).await?;
+    let miners = get_program_accounts::<Miner>(rpc, blackgold_api::ID, vec![filter]).await?;
 
     println!("Fetched {} miners for round {}", miners.len(), round_id);
 
@@ -555,7 +555,7 @@ async fn deploy(
     let board = get_board(rpc).await?;
     let mut squares = [false; 25];
     squares[square_id as usize] = true;
-    let ix = ore_api::sdk::deploy(
+    let ix = blackgold_api::sdk::deploy(
         payer.pubkey(),
         payer.pubkey(),
         amount,
@@ -574,7 +574,7 @@ async fn deploy_all(
     let amount = u64::from_str(&amount).expect("Invalid AMOUNT");
     let board = get_board(rpc).await?;
     let squares = [true; 25];
-    let ix = ore_api::sdk::deploy(
+    let ix = blackgold_api::sdk::deploy(
         payer.pubkey(),
         payer.pubkey(),
         board.round_id,
@@ -625,7 +625,7 @@ async fn update_protocol_config(
     }
 
     // Submit.
-    let ix = ore_api::sdk::update_protocol_config(
+    let ix = blackgold_api::sdk::update_protocol_config(
         payer.pubkey(),
         config.protocol.authority,
         config.protocol.fee_collector,
@@ -658,7 +658,7 @@ async fn checkpoint(
     let authority = std::env::var("AUTHORITY").unwrap_or(payer.pubkey().to_string());
     let authority = Pubkey::from_str(&authority).expect("Invalid AUTHORITY");
     let miner = get_miner(rpc, authority).await?;
-    let ix = ore_api::sdk::checkpoint(payer.pubkey(), authority, miner.round_id);
+    let ix = blackgold_api::sdk::checkpoint(payer.pubkey(), authority, miner.round_id);
     submit_transaction(rpc, payer, &[ix]).await?;
     Ok(())
 }
@@ -694,7 +694,7 @@ async fn checkpoint_all(
                     miner.authority,
                     (expires_at - clock.slot) as f64 * 0.4
                 );
-                ixs.push(ore_api::sdk::checkpoint(
+                ixs.push(blackgold_api::sdk::checkpoint(
                     payer.pubkey(),
                     miner.authority,
                     miner.round_id,
@@ -723,7 +723,7 @@ async fn close_all(
     let clock = get_clock(rpc).await?;
     for (_i, (_address, round)) in rounds.iter().enumerate() {
         if clock.slot >= round.expires_at {
-            ixs.push(ore_api::sdk::close(
+            ixs.push(blackgold_api::sdk::close(
                 payer.pubkey(),
                 round.id,
                 round.rent_payer,
@@ -809,13 +809,13 @@ async fn log_automations(rpc: &RpcClient) -> Result<(), anyhow::Error> {
 }
 
 async fn log_treasury(rpc: &RpcClient) -> Result<(), anyhow::Error> {
-    let treasury_address = ore_api::state::treasury_pda().0;
+    let treasury_address = blackgold_api::state::treasury_pda().0;
     let treasury = get_treasury(rpc).await?;
     println!("Treasury");
     println!("  address: {}", treasury_address);
     // println!("  balance: {} SOL", lamports_to_sol(treasury.balance));
     println!(
-        "  motherlode: {} ORE",
+        "  motherlode: {} BLACKGOLD",
         amount_to_ui_amount(treasury.motherlode, TOKEN_DECIMALS)
     );
     println!(
@@ -823,11 +823,11 @@ async fn log_treasury(rpc: &RpcClient) -> Result<(), anyhow::Error> {
         treasury.miner_rewards_factor.to_i80f48().to_string()
     );
     println!(
-        "  total_refined: {} ORE",
+        "  total_refined: {} BLACKGOLD",
         amount_to_ui_amount(treasury.total_refined, TOKEN_DECIMALS)
     );
     println!(
-        "  total_unclaimed: {} ORE",
+        "  total_unclaimed: {} BLACKGOLD",
         amount_to_ui_amount(treasury.total_unclaimed, TOKEN_DECIMALS)
     );
     Ok(())
@@ -854,14 +854,14 @@ async fn log_round(rpc: &RpcClient) -> Result<(), anyhow::Error> {
     println!("  Expires at: {}", round.expires_at);
     println!("  Id: {:?}", round.id);
     println!(
-        "  Motherlode: {} ORE",
+        "  Motherlode: {} BLACKGOLD",
         amount_to_ui_amount(round.motherlode, TOKEN_DECIMALS)
     );
     println!("  Rent payer: {}", round.rent_payer);
     println!("  Slot hash: {:?}", round.slot_hash);
     println!("  Top miner: {:?}", round.top_miner);
     println!(
-        "  Top miner reward: {} ORE",
+        "  Top miner reward: {} BLACKGOLD",
         amount_to_ui_amount(round.top_miner_reward(), TOKEN_DECIMALS)
     );
     println!("  Total miners: {}", round.total_miners);
@@ -893,7 +893,7 @@ async fn log_miner(
     let authority = std::env::var("AUTHORITY").unwrap_or(payer.pubkey().to_string());
     let authority = Pubkey::from_str(&authority).expect("Invalid AUTHORITY");
     let treasury: Treasury = get_treasury(&rpc).await?;
-    let miner_address = ore_api::state::miner_pda(authority).0;
+    let miner_address = blackgold_api::state::miner_pda(authority).0;
     let mut miner = get_miner(&rpc, authority).await?;
     miner.update_rewards(&treasury);
     println!("Miner");
@@ -906,7 +906,7 @@ async fn log_miner(
         lamports_to_sol(miner.checkpoint_fee)
     );
     println!("  checkpoint_id: {}", miner.checkpoint_id);
-    println!("  last_claim_ore_at: {}", miner.last_claim_ore_at);
+    println!("  last_claim_blackgold_at: {}", miner.last_claim_blackgold_at);
     println!("  last_claim_sol_at: {}", miner.last_claim_sol_at);
     println!(
         "  rewards_factor: {}",
@@ -914,12 +914,12 @@ async fn log_miner(
     );
     println!("  rewards_sol: {} SOL", lamports_to_sol(miner.rewards_sol));
     println!(
-        "  rewards_ore: {} ORE",
-        amount_to_ui_amount(miner.rewards_ore, TOKEN_DECIMALS)
+        "  rewards_blackgold: {} BLACKGOLD",
+        amount_to_ui_amount(miner.rewards_blackgold, TOKEN_DECIMALS)
     );
     println!(
-        "  refined_ore: {} ORE",
-        amount_to_ui_amount(miner.refined_ore, TOKEN_DECIMALS)
+        "  refined_blackgold: {} BLACKGOLD",
+        amount_to_ui_amount(miner.refined_blackgold, TOKEN_DECIMALS)
     );
     println!("  round_id: {}", miner.round_id);
     println!(
@@ -927,8 +927,8 @@ async fn log_miner(
         lamports_to_sol(miner.lifetime_rewards_sol)
     );
     println!(
-        "  lifetime_rewards_ore: {} ORE",
-        amount_to_ui_amount(miner.lifetime_rewards_ore, TOKEN_DECIMALS)
+        "  lifetime_rewards_blackgold: {} BLACKGOLD",
+        amount_to_ui_amount(miner.lifetime_rewards_blackgold, TOKEN_DECIMALS)
     );
     println!(
         "  lifetime_deployed: {} SOL",
@@ -1036,7 +1036,7 @@ async fn uncheckpointed(
         let is_current = round_id == board.round_id;
 
         // Get round account balance and data.
-        let round_pda = ore_api::state::round_pda(round_id).0;
+        let round_pda = blackgold_api::state::round_pda(round_id).0;
         let round_balance = rpc.get_balance(&round_pda).await.unwrap_or(0);
         let available = round_balance.saturating_sub(round_rent_exempt);
 
@@ -1181,7 +1181,7 @@ async fn topup_rounds(
     let mut transfers: Vec<(Pubkey, u64)> = Vec::new();
 
     for round_id in &round_ids {
-        let round_pda = ore_api::state::round_pda(*round_id).0;
+        let round_pda = blackgold_api::state::round_pda(*round_id).0;
 
         // Get current round account balance.
         let balance = rpc.get_balance(&round_pda).await?;
@@ -1309,7 +1309,7 @@ async fn checkpoint_backfill(
     let ixs: Vec<Instruction> = targets
         .iter()
         .map(|(authority, round_id)| {
-            ore_api::sdk::checkpoint(payer.pubkey(), *authority, *round_id)
+            blackgold_api::sdk::checkpoint(payer.pubkey(), *authority, *round_id)
         })
         .collect();
 
@@ -1324,12 +1324,12 @@ async fn checkpoint_backfill(
 }
 
 async fn get_automations(rpc: &RpcClient) -> Result<Vec<(Pubkey, Automation)>, anyhow::Error> {
-    let automations = get_program_accounts::<Automation>(rpc, ore_api::ID, vec![]).await?;
+    let automations = get_program_accounts::<Automation>(rpc, blackgold_api::ID, vec![]).await?;
     Ok(automations)
 }
 
 async fn get_board(rpc: &RpcClient) -> Result<Board, anyhow::Error> {
-    let board_pda = ore_api::state::board_pda();
+    let board_pda = blackgold_api::state::board_pda();
     let account = rpc.get_account(&board_pda.0).await?;
     let board = Board::try_from_bytes(&account.data)?;
     Ok(*board)
@@ -1342,35 +1342,35 @@ async fn get_var(rpc: &RpcClient, address: Pubkey) -> Result<Var, anyhow::Error>
 }
 
 async fn get_round(rpc: &RpcClient, id: u64) -> Result<Round, anyhow::Error> {
-    let round_pda = ore_api::state::round_pda(id);
+    let round_pda = blackgold_api::state::round_pda(id);
     let account = rpc.get_account(&round_pda.0).await?;
     let round = Round::try_from_bytes(&account.data)?;
     Ok(*round)
 }
 
 async fn get_treasury(rpc: &RpcClient) -> Result<Treasury, anyhow::Error> {
-    let treasury_pda = ore_api::state::treasury_pda();
+    let treasury_pda = blackgold_api::state::treasury_pda();
     let account = rpc.get_account(&treasury_pda.0).await?;
     let treasury = Treasury::try_from_bytes(&account.data)?;
     Ok(*treasury)
 }
 
 async fn get_automation(rpc: &RpcClient, authority: Pubkey) -> Result<Automation, anyhow::Error> {
-    let automation_pda = ore_api::state::automation_pda(authority);
+    let automation_pda = blackgold_api::state::automation_pda(authority);
     let account = rpc.get_account(&automation_pda.0).await?;
     let automation = Automation::try_from_bytes(&account.data)?;
     Ok(*automation)
 }
 
 async fn get_config(rpc: &RpcClient) -> Result<Config, anyhow::Error> {
-    let config_pda = ore_api::state::config_pda();
+    let config_pda = blackgold_api::state::config_pda();
     let account = rpc.get_account(&config_pda.0).await?;
     let config = Config::try_from_bytes(&account.data)?;
     Ok(*config)
 }
 
 async fn get_miner(rpc: &RpcClient, authority: Pubkey) -> Result<Miner, anyhow::Error> {
-    let miner_pda = ore_api::state::miner_pda(authority);
+    let miner_pda = blackgold_api::state::miner_pda(authority);
     let account = rpc.get_account(&miner_pda.0).await?;
     let miner = Miner::try_from_bytes(&account.data)?;
     Ok(*miner)
@@ -1383,12 +1383,12 @@ async fn get_clock(rpc: &RpcClient) -> Result<Clock, anyhow::Error> {
 }
 
 async fn get_rounds(rpc: &RpcClient) -> Result<Vec<(Pubkey, Round)>, anyhow::Error> {
-    let rounds = get_program_accounts::<Round>(rpc, ore_api::ID, vec![]).await?;
+    let rounds = get_program_accounts::<Round>(rpc, blackgold_api::ID, vec![]).await?;
     Ok(rounds)
 }
 
 async fn get_miners(rpc: &RpcClient) -> Result<Vec<(Pubkey, Miner)>, anyhow::Error> {
-    let miners = get_program_accounts::<Miner>(rpc, ore_api::ID, vec![]).await?;
+    let miners = get_program_accounts::<Miner>(rpc, blackgold_api::ID, vec![]).await?;
     Ok(miners)
 }
 
@@ -1397,7 +1397,7 @@ async fn get_miners_participating(
     round_id: u64,
 ) -> Result<Vec<(Pubkey, Miner)>, anyhow::Error> {
     let filter = RpcFilterType::Memcmp(Memcmp::new_base58_encoded(512, &round_id.to_le_bytes()));
-    let miners = get_program_accounts::<Miner>(rpc, ore_api::ID, vec![filter]).await?;
+    let miners = get_program_accounts::<Miner>(rpc, blackgold_api::ID, vec![filter]).await?;
     Ok(miners)
 }
 

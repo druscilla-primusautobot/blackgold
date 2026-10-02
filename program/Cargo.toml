@@ -20,9 +20,9 @@ default = []
 [dependencies]
 bincode.workspace = true
 entropy-api.workspace = true
-ore-api.workspace = true
-ore-stake-api.workspace = true
-ore-mint-api.workspace = true
+blackgold-api.workspace = true
+blackgold-stake-api.workspace = true
+blackgold-mint-api.workspace = true
 solana-nostd-keccak.workspace = true
 solana-program.workspace = true
 solana-security-txt.workspace = true

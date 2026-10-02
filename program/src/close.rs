@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use solana_program::rent::Rent;
 use steel::*;
 
@@ -14,16 +14,16 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     signer_info.is_signer()?;
     let board = board_info
         .has_address(&BOARD_ADDRESS)?
-        .as_account_mut::<Board>(&ore_api::ID)?;
+        .as_account_mut::<Board>(&blackgold_api::ID)?;
     rent_payer_info.is_writable()?;
     round_info
-        .as_account_mut::<Round>(&ore_api::ID)?
+        .as_account_mut::<Round>(&blackgold_api::ID)?
         .assert_mut(|r| r.id < board.round_id)?
         .assert_mut(|r| r.expires_at < clock.slot)? // Ensure round has expired.
         .assert_mut(|r| r.rent_payer == *rent_payer_info.key)?; // Ensure the rent payer is the correct one.
     treasury_info
         .has_address(&TREASURY_ADDRESS)?
-        .as_account_mut::<Treasury>(&ore_api::ID)?;
+        .as_account_mut::<Treasury>(&blackgold_api::ID)?;
     system_program.is_program(&system_program::ID)?;
 
     // Vault all unclaimed rewards.

@@ -2,7 +2,7 @@ use steel::*;
 
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq, TryFromPrimitive)]
-pub enum OreInstruction {
+pub enum BlackGoldInstruction {
     // Miner
     Automate = 0,
     Checkpoint = 2,
@@ -24,7 +24,7 @@ pub enum OreInstruction {
 
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq, TryFromPrimitive)]
-pub enum OreInstructionV2 {
+pub enum BlackGoldInstructionV2 {
     AutomateV2 = 0,
 }
 
@@ -132,17 +132,17 @@ pub struct UpdateProtocolConfig {
     pub entropy_program_id: [u8; 32],
 }
 
-instruction!(OreInstruction, Automate);
-instruction!(OreInstruction, Close);
-instruction!(OreInstruction, Checkpoint);
-instruction!(OreInstruction, ClaimSOL);
-instruction!(OreInstruction, ClaimBLACKGOLD);
-instruction!(OreInstruction, Deploy);
-instruction!(OreInstruction, Log);
-instruction!(OreInstruction, Wrap);
-instruction!(OreInstruction, Buyback);
-instruction!(OreInstruction, Bury);
-instruction!(OreInstruction, Reset);
-instruction!(OreInstruction, NewVar);
-instruction!(OreInstruction, UpdateProtocolConfig);
-instruction!(OreInstructionV2, AutomateV2);
+instruction!(BlackgoldInstruction, Automate);
+instruction!(BlackgoldInstruction, Close);
+instruction!(BlackgoldInstruction, Checkpoint);
+instruction!(BlackgoldInstruction, ClaimSOL);
+instruction!(BlackgoldInstruction, ClaimBLACKGOLD);
+instruction!(BlackgoldInstruction, Deploy);
+instruction!(BlackgoldInstruction, Log);
+instruction!(BlackgoldInstruction, Wrap);
+instruction!(BlackgoldInstruction, Buyback);
+instruction!(BlackgoldInstruction, Bury);
+instruction!(BlackgoldInstruction, Reset);
+instruction!(BlackgoldInstruction, NewVar);
+instruction!(BlackgoldInstruction, UpdateProtocolConfig);
+instruction!(BlackgoldInstructionV2, AutomateV2);

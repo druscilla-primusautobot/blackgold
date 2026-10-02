@@ -1,4 +1,4 @@
-use ore_mint_api::consts::ONE_ORE;
+use blackgold_mint_api::consts::ONE_BLACKGOLD;
 use serde::{Deserialize, Serialize};
 use steel::*;
 

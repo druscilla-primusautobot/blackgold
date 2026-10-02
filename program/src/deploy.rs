@@ -1,5 +1,5 @@
 use entropy_api::state::Var;
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use solana_program::{keccak::hashv, log::sol_log, native_token::lamports_to_sol};
 use steel::*;
 
@@ -23,24 +23,24 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     authority_info.is_writable()?;
     automation_info
         .is_writable()?
-        .has_seeds(&[AUTOMATION, &authority_info.key.to_bytes()], &ore_api::ID)?;
+        .has_seeds(&[AUTOMATION, &authority_info.key.to_bytes()], &blackgold_api::ID)?;
     let config = config_info
         .has_address(&CONFIG_ADDRESS)?
-        .as_account::<Config>(&ore_api::ID)?;
+        .as_account::<Config>(&blackgold_api::ID)?;
     let board = board_info
         .has_address(&BOARD_ADDRESS)?
-        .as_account_mut::<Board>(&ore_api::ID)?
+        .as_account_mut::<Board>(&blackgold_api::ID)?
         .assert_mut(|b| clock.slot >= b.start_slot && clock.slot < b.end_slot)?;
     let round = round_info
-        .has_seeds(&[ROUND, &board.round_id.to_le_bytes()], &ore_api::ID)?
-        .as_account_mut::<Round>(&ore_api::ID)?
+        .has_seeds(&[ROUND, &board.round_id.to_le_bytes()], &blackgold_api::ID)?
+        .as_account_mut::<Round>(&blackgold_api::ID)?
         .assert_mut(|r| r.id == board.round_id)?;
     let treasury = treasury_info
         .has_address(&TREASURY_ADDRESS)?
-        .as_account_mut::<Treasury>(&ore_api::ID)?;
+        .as_account_mut::<Treasury>(&blackgold_api::ID)?;
     miner_info
         .is_writable()?
-        .has_seeds(&[MINER, &authority_info.key.to_bytes()], &ore_api::ID)?;
+        .has_seeds(&[MINER, &authority_info.key.to_bytes()], &blackgold_api::ID)?;
     system_program.is_program(&system_program::ID)?;
 
     // Wait until first deploy to start round.
@@ -72,7 +72,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     let mut strategy = u64::MAX;
     let automation = if !automation_info.data_is_empty() {
         let automation = automation_info
-            .as_account_mut::<Automation>(&ore_api::ID)?
+            .as_account_mut::<Automation>(&blackgold_api::ID)?
             .assert_mut(|a| a.executor == *signer_info.key || a.executor == EXECUTOR_ADDRESS)?
             .assert_mut(|a| a.authority == *authority_info.key)?;
 
@@ -220,10 +220,10 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
             miner_info,
             system_program,
             signer_info,
-            &ore_api::ID,
+            &blackgold_api::ID,
             &[MINER, &signer_info.key.to_bytes()],
         )?;
-        let miner = miner_info.as_account_mut::<Miner>(&ore_api::ID)?;
+        let miner = miner_info.as_account_mut::<Miner>(&blackgold_api::ID)?;
         miner.authority = *signer_info.key;
         miner.deployed = [0; 25];
         miner.cumulative = [0; 25];
@@ -237,7 +237,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
         miner
     } else {
         miner_info
-            .as_account_mut::<Miner>(&ore_api::ID)?
+            .as_account_mut::<Miner>(&blackgold_api::ID)?
             .assert_mut(|m| {
                 if let Some(automation) = &automation {
                     m.authority == automation.authority

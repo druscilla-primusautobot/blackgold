@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use steel::*;
 
 /// No-op, use instruction data for logging w/o truncation.

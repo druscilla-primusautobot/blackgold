@@ -1,5 +1,5 @@
-use ore_api::prelude::*;
-use ore_api::sdk::program_log;
+use blackgold_api::prelude::*;
+use blackgold_api::sdk::program_log;
 use solana_program::{log::sol_log, native_token::lamports_to_sol};
 use steel::*;
 
@@ -13,11 +13,11 @@ pub fn process_claim_sol(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramR
     signer_info.is_signer()?;
     board_info.has_address(&BOARD_ADDRESS)?;
     let miner = miner_info
-        .has_seeds(&[MINER, &signer_info.key.to_bytes()], &ore_api::ID)?
-        .as_account_mut::<Miner>(&ore_api::ID)?
+        .has_seeds(&[MINER, &signer_info.key.to_bytes()], &blackgold_api::ID)?
+        .as_account_mut::<Miner>(&blackgold_api::ID)?
         .assert_mut(|m| m.authority == *signer_info.key)?;
     system_program.is_program(&system_program::ID)?;
-    blackgold_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&blackgold_api::ID)?;
 
     // Normalize amount.
     let amount = miner.claim_sol(&clock);

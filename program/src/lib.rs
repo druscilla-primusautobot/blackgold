@@ -26,7 +26,7 @@ use reset::*;
 use update_protocol_config::*;
 use wrap::*;
 
-use ore_api::instruction::*;
+use blackgold_api::instruction::*;
 use solana_security_txt::security_txt;
 use steel::*;
 
@@ -35,7 +35,7 @@ pub fn process_instruction(
     accounts: &[AccountInfo],
     data: &[u8],
 ) -> ProgramResult {
-    let (ix, data) = parse_instruction(&ore_api::ID, program_id, data)?;
+    let (ix, data) = parse_instruction(&blackgold_api::ID, program_id, data)?;
 
     match ix {
         // Miner

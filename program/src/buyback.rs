@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use solana_program::log::sol_log;
 use solana_program::native_token::lamports_to_sol;
 use spl_token::amount_to_ui_amount;
@@ -16,17 +16,17 @@ pub fn process_buyback(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResu
     signer_info.is_signer()?.has_address(&BURY_AUTHORITY)?;
     board_info
         .has_address(&BOARD_ADDRESS)?
-        .as_account_mut::<Board>(&ore_api::ID)?;
+        .as_account_mut::<Board>(&blackgold_api::ID)?;
     let blackgold_mint = mint_info.has_address(&MINT_ADDRESS)?.as_mint()?;
     treasury_info
         .has_address(&TREASURY_ADDRESS)?
-        .as_account_mut::<Treasury>(&ore_api::ID)?;
+        .as_account_mut::<Treasury>(&blackgold_api::ID)?;
     let treasury_blackgold =
         treasury_blackgold_info.as_associated_token_account(treasury_info.key, &MINT_ADDRESS)?;
     treasury_sol_info.as_associated_token_account(treasury_info.key, &SOL_MINT)?;
     token_program.is_program(&spl_token::ID)?;
-    blackgold_program.is_program(&ore_api::ID)?;
-    blackgold_stake_program.is_program(&ore_stake_api::ID)?;
+    blackgold_program.is_program(&blackgold_api::ID)?;
+    blackgold_stake_program.is_program(&blackgold_stake_api::ID)?;
 
     // Sync native token balance.
     sync_native(treasury_sol_info)?;
@@ -71,7 +71,7 @@ pub fn process_buyback(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResu
             data: data.to_vec(),
         },
         &accounts_infos,
-        &ore_api::ID,
+        &blackgold_api::ID,
         &[TREASURY],
     )?;
 
@@ -114,7 +114,7 @@ pub fn process_buyback(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResu
     let shared_amount = total_blackgold / 10;
     if shared_amount > 0 {
         invoke_signed(
-            &ore_stake_api::sdk::distribute(*treasury_info.key, shared_amount),
+            &blackgold_stake_api::sdk::distribute(*treasury_info.key, shared_amount),
             &[
                 treasury_info.clone(),
                 treasury_blackgold_info.clone(),
@@ -125,7 +125,7 @@ pub fn process_buyback(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResu
                 token_program.clone(),
                 blackgold_stake_program.clone(),
             ],
-            &ore_api::ID,
+            &blackgold_api::ID,
             &[TREASURY],
         )?;
         sol_log(&format!(

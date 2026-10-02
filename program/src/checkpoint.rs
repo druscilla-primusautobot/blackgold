@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use solana_program::{log::sol_log, native_token::lamports_to_sol, rent::Rent};
 use spl_token::amount_to_ui_amount;
 use steel::*;
@@ -14,17 +14,17 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
     };
     signer_info.is_signer()?;
     authority_info.is_writable()?;
-    automation_info.has_seeds(&[AUTOMATION, &authority_info.key.to_bytes()], &ore_api::ID)?;
+    automation_info.has_seeds(&[AUTOMATION, &authority_info.key.to_bytes()], &blackgold_api::ID)?;
     let board = board_info
         .has_address(&BOARD_ADDRESS)?
-        .as_account::<Board>(&ore_api::ID)?;
+        .as_account::<Board>(&blackgold_api::ID)?;
     let miner = miner_info
-        .has_seeds(&[MINER, &authority_info.key.to_bytes()], &ore_api::ID)?
-        .as_account_mut::<Miner>(&ore_api::ID)?
+        .has_seeds(&[MINER, &authority_info.key.to_bytes()], &blackgold_api::ID)?
+        .as_account_mut::<Miner>(&blackgold_api::ID)?
         .assert_mut(|m| m.authority == *authority_info.key)?;
     let treasury = treasury_info
         .has_address(&TREASURY_ADDRESS)?
-        .as_account_mut::<Treasury>(&ore_api::ID)?;
+        .as_account_mut::<Treasury>(&blackgold_api::ID)?;
     system_program.is_program(&system_program::ID)?;
 
     // If miner has already checkpointed this round, return.
@@ -37,13 +37,13 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
     // In this case, the miner forfeits any potential rewards.
     if round_info.data_is_empty() {
         sol_log(&format!("Round account is empty").as_str());
-        round_info.has_seeds(&[ROUND, &miner.round_id.to_le_bytes()], &ore_api::ID)?;
+        round_info.has_seeds(&[ROUND, &miner.round_id.to_le_bytes()], &blackgold_api::ID)?;
         miner.checkpoint_id = miner.round_id;
         return Ok(());
     }
 
     // If round is current round, or the miner round ID does not match the provided round, return.
-    let round = round_info.as_account_mut::<Round>(&ore_api::ID)?; // Round has been closed.
+    let round = round_info.as_account_mut::<Round>(&blackgold_api::ID)?; // Round has been closed.
     sol_log(&format!("Round ID: {}", round.id).as_str());
     if round.id == board.round_id || round.id != miner.round_id || round.slot_hash == [0; 32] {
         sol_log(&format!("Round not valid").as_str());
@@ -183,7 +183,7 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
     // Load the automation account if it exists.
     let automation = if !automation_info.data_is_empty() {
         let automation = automation_info
-            .as_account_mut::<Automation>(&ore_api::ID)?
+            .as_account_mut::<Automation>(&blackgold_api::ID)?
             .assert_mut(|a| a.authority == miner.authority)?;
         automation.total_blackgold_earned += rewards_blackgold;
         Some(automation)

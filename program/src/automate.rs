@@ -1,6 +1,6 @@
 use std::u64;
 
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use steel::*;
 
 /// Sets the executor.
@@ -50,7 +50,7 @@ pub fn process_automate(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramRes
         || strategy == AutomationStrategy::DiscretionaryBps)
         && *executor_info.key == EXECUTOR_ADDRESS
     {
-        return Err(OreError::InvalidExecutor.into());
+        return Err(BlackgoldError::InvalidExecutor.into());
     }
 
     // Open miner account.
@@ -59,10 +59,10 @@ pub fn process_automate(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramRes
             miner_info,
             system_program,
             &signer_info,
-            &ore_api::ID,
+            &blackgold_api::ID,
             &[MINER, &signer_info.key.to_bytes()],
         )?;
-        let miner = miner_info.as_account_mut::<Miner>(&ore_api::ID)?;
+        let miner = miner_info.as_account_mut::<Miner>(&blackgold_api::ID)?;
         miner.authority = *signer_info.key;
         miner.deployed = [0; 25];
         miner.cumulative = [0; 25];
@@ -77,20 +77,20 @@ pub fn process_automate(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramRes
         miner
     } else {
         miner_info
-            .as_account_mut::<Miner>(&ore_api::ID)?
+            .as_account_mut::<Miner>(&blackgold_api::ID)?
             .assert_mut_err(
                 |m| m.authority == *signer_info.key,
-                OreError::NotAuthorized.into(),
+                BlackgoldError::NotAuthorized.into(),
             )?
     };
 
     // Close account if executor is Pubkey::default().
     if *executor_info.key == Pubkey::default() {
         automation_info
-            .as_account_mut::<Automation>(&ore_api::ID)?
+            .as_account_mut::<Automation>(&blackgold_api::ID)?
             .assert_mut_err(
                 |a| a.authority == *signer_info.key,
-                OreError::NotAuthorized.into(),
+                BlackgoldError::NotAuthorized.into(),
             )?;
         automation_info.close(signer_info)?;
         return Ok(());
@@ -102,19 +102,19 @@ pub fn process_automate(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramRes
             automation_info,
             system_program,
             signer_info,
-            &ore_api::ID,
+            &blackgold_api::ID,
             &[AUTOMATION, &signer_info.key.to_bytes()],
         )?;
-        let automation = automation_info.as_account_mut::<Automation>(&ore_api::ID)?;
+        let automation = automation_info.as_account_mut::<Automation>(&blackgold_api::ID)?;
         automation.balance = 0;
         automation.authority = *signer_info.key;
         automation
     } else {
         automation_info
-            .as_account_mut::<Automation>(&ore_api::ID)?
+            .as_account_mut::<Automation>(&blackgold_api::ID)?
             .assert_mut_err(
                 |a| a.authority == *signer_info.key,
-                OreError::NotAuthorized.into(),
+                BlackgoldError::NotAuthorized.into(),
             )?
     };
 

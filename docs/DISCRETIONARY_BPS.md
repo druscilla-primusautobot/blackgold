@@ -49,8 +49,8 @@ Like `Discretionary`, the executor has full control over:
 Use the `automate` SDK function with `strategy = 3`:
 
 ```rust
-use ore_api::sdk::automate;
-use ore_api::state::AutomationConditions;
+use blackgold_api::sdk::automate;
+use blackgold_api::state::AutomationConditions;
 
 let ix = automate(
     signer,              // authority (miner owner)
@@ -72,7 +72,7 @@ The Deploy instruction is identical to `Discretionary`. The executor submits a D
 - `squares`: a 32-bit bitmask where bits 0-24 select which squares to deploy to
 
 ```rust
-use ore_api::sdk::deploy;
+use blackgold_api::sdk::deploy;
 
 let ix = deploy(
     executor_pubkey,    // signer (executor)

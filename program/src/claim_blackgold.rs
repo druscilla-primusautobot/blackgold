@@ -1,5 +1,5 @@
-use ore_api::prelude::*;
-use ore_api::sdk::program_log;
+use blackgold_api::prelude::*;
+use blackgold_api::sdk::program_log;
 use solana_program::log::sol_log;
 use spl_token::amount_to_ui_amount;
 use steel::*;
@@ -22,19 +22,19 @@ pub fn process_claim_blackgold(accounts: &[AccountInfo<'_>], data: &[u8]) -> Pro
     signer_info.is_signer()?;
     board_info.has_address(&BOARD_ADDRESS)?;
     let miner = miner_info
-        .has_seeds(&[MINER, &signer_info.key.to_bytes()], &ore_api::ID)?
-        .as_account_mut::<Miner>(&ore_api::ID)?
+        .has_seeds(&[MINER, &signer_info.key.to_bytes()], &blackgold_api::ID)?
+        .as_account_mut::<Miner>(&blackgold_api::ID)?
         .assert_mut(|m| m.authority == *signer_info.key)?;
     mint_info.has_address(&MINT_ADDRESS)?.as_mint()?;
     recipient_info.is_writable()?;
     let treasury = treasury_info
         .has_address(&TREASURY_ADDRESS)?
-        .as_account_mut::<Treasury>(&ore_api::ID)?;
+        .as_account_mut::<Treasury>(&blackgold_api::ID)?;
     treasury_tokens_info.as_associated_token_account(&treasury_info.key, &mint_info.key)?;
     system_program.is_program(&system_program::ID)?;
     token_program.is_program(&spl_token::ID)?;
     associated_token_program.is_program(&spl_associated_token_account::ID)?;
-    blackgold_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&blackgold_api::ID)?;
 
     // Load recipient.
     if recipient_info.data_is_empty() {

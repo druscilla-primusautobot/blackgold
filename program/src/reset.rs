@@ -1,6 +1,6 @@
 use entropy_api::state::Var;
-use ore_api::prelude::*;
-use ore_mint_api::consts::MAX_SUPPLY;
+use blackgold_api::prelude::*;
+use blackgold_mint_api::consts::MAX_SUPPLY;
 use solana_program::{keccak, log::sol_log};
 use steel::*;
 
@@ -21,29 +21,29 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     signer_info.is_signer()?;
     let config = config_info
         .has_address(&CONFIG_ADDRESS)?
-        .as_account::<Config>(&ore_api::ID)?;
+        .as_account::<Config>(&blackgold_api::ID)?;
     let board = board_info
         .has_address(&BOARD_ADDRESS)?
-        .as_account_mut::<Board>(&ore_api::ID)?
+        .as_account_mut::<Board>(&blackgold_api::ID)?
         .assert_mut(|b| clock.slot >= b.end_slot + config.protocol.intermission_slots)?;
     fee_collector_info
         .is_writable()?
         .has_address(&ADMIN_FEE_COLLECTOR)?;
     let round = round_info
-        .as_account_mut::<Round>(&ore_api::ID)?
+        .as_account_mut::<Round>(&blackgold_api::ID)?
         .assert_mut(|r| r.id == board.round_id)?;
     round_next_info
         .is_empty()?
         .is_writable()?
-        .has_seeds(&[ROUND, &(board.round_id + 1).to_le_bytes()], &ore_api::ID)?;
+        .has_seeds(&[ROUND, &(board.round_id + 1).to_le_bytes()], &blackgold_api::ID)?;
     let mint = mint_info.has_address(&MINT_ADDRESS)?.as_mint()?;
     let treasury = treasury_info
         .has_address(&TREASURY_ADDRESS)?
-        .as_account_mut::<Treasury>(&ore_api::ID)?;
+        .as_account_mut::<Treasury>(&blackgold_api::ID)?;
     treasury_tokens_info.as_associated_token_account(&treasury_info.key, &mint_info.key)?;
     system_program.is_program(&system_program::ID)?;
     token_program.is_program(&spl_token::ID)?;
-    blackgold_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&blackgold_api::ID)?;
     slot_hashes_sysvar.is_sysvar(&sysvar::slot_hashes::ID)?;
 
     // Open next round account.
@@ -51,10 +51,10 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
         round_next_info,
         blackgold_program,
         signer_info,
-        &ore_api::ID,
+        &blackgold_api::ID,
         &[ROUND, &(board.round_id + 1).to_le_bytes()],
     )?;
-    let round_next = round_next_info.as_account_mut::<Round>(&ore_api::ID)?;
+    let round_next = round_next_info.as_account_mut::<Round>(&blackgold_api::ID)?;
     round_next.id = board.round_id + 1;
     round_next.deployed = [0; 25];
     round_next.slot_hash = [0; 32];
@@ -170,10 +170,10 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     let [mint_authority_info, mint_program] = mint_accounts else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
-    mint_authority_info.as_account::<ore_mint_api::state::Authority>(&ore_mint_api::ID)?;
-    mint_program.is_program(&ore_mint_api::ID)?;
+    mint_authority_info.as_account::<blackgold_mint_api::state::Authority>(&blackgold_mint_api::ID)?;
+    mint_program.is_program(&blackgold_mint_api::ID)?;
     invoke_signed(
-        &ore_mint_api::sdk::mint_ore(total_mint_amount),
+        &blackgold_mint_api::sdk::mint_blackgold(total_mint_amount),
         &[
             treasury_info.clone(),
             mint_authority_info.clone(),
@@ -181,14 +181,14 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
             treasury_tokens_info.clone(),
             token_program.clone(),
         ],
-        &ore_api::ID,
+        &blackgold_api::ID,
         &[TREASURY],
     )?;
 
     // Validate top miner (dry-run - no errors on failure).
     sol_log(&format!("Winning square: {}", winning_square).to_string());
     if round.top_miner != SPLIT_ADDRESS && round.deployed[winning_square] > 0 {
-        if let Ok(miner) = top_miner_info.as_account::<Miner>(&ore_api::ID) {
+        if let Ok(miner) = top_miner_info.as_account::<Miner>(&blackgold_api::ID) {
             if miner.round_id == round.id {
                 let top_miner_sample = round.top_miner_sample(r, winning_square);
                 sol_log(&format!("Top miner sample: {}", top_miner_sample).to_string());

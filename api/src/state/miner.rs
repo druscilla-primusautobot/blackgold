@@ -97,7 +97,7 @@ impl Miner {
             // Distribute the tax
             treasury.miner_rewards_factor += Numeric::from_fraction(fee, treasury.total_unclaimed);
             treasury.total_refined += fee;
-            self.lifetime_rewards_ore -= fee;
+            self.lifetime_rewards_blackgold -= fee;
         }
 
         (amount, fee)

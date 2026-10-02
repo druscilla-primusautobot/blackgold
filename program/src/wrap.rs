@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use solana_program::{
     log::sol_log,
     native_token::{lamports_to_sol, LAMPORTS_PER_SOL},
@@ -28,12 +28,12 @@ pub fn process_wrap(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     signer_info.is_signer()?.has_address(&BURY_AUTHORITY)?;
     board_info.has_address(&BOARD_ADDRESS)?;
     manager_info.is_writable()?.has_address(&LIQ_MANAGER)?;
-    treasury_info.as_account_mut::<Treasury>(&ore_api::ID)?;
+    treasury_info.as_account_mut::<Treasury>(&blackgold_api::ID)?;
     treasury_sol_info
         .is_writable()?
         .as_associated_token_account(treasury_info.key, &SOL_MINT)?;
     system_program.is_program(&system_program::ID)?;
-    blackgold_program.is_program(&ore_api::ID)?;
+    blackgold_program.is_program(&blackgold_api::ID)?;
 
     // Get amount
     let balance = treasury_info.lamports() - Rent::get()?.minimum_balance(Treasury::SIZE);

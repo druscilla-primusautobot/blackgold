@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use steel::*;
 
-pub enum OreEvent {
+pub enum BlackgoldEvent {
     Reset = 0,
     Bury = 1,
     Deploy = 2,
@@ -65,10 +65,10 @@ pub struct BuryEvent {
     pub disc: u64,
 
     /// The amount of ORE buried.
-    pub ore_buried: u64,
+    pub blackgold_buried: u64,
 
     /// The amount of ORE shared with stakers.
-    pub ore_shared: u64,
+    pub blackgold_shared: u64,
 
     /// The amount of SOL swapped.
     pub sol_amount: u64,

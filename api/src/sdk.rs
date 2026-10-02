@@ -77,7 +77,7 @@ pub fn claim_sol(signer: Pubkey) -> Instruction {
 
 // let [signer_info, board_info, miner_info, mint_info, recipient_info, treasury_info, treasury_tokens_info, system_program, token_program, associated_token_program, ore_program] =
 
-pub fn claim_ore(signer: Pubkey, bps: u64) -> Instruction {
+pub fn claim_blackgold(signer: Pubkey, bps: u64) -> Instruction {
     let board_address = board_pda().0;
     let miner_address = miner_pda(signer).0;
     let treasury_address = treasury_pda().0;
@@ -167,26 +167,26 @@ pub fn buyback(
     let config_address = config_pda().0;
     let mint_address = MINT_ADDRESS;
     let treasury_address = treasury_pda().0;
-    let treasury_ore_address = get_associated_token_address(&treasury_address, &MINT_ADDRESS);
+    let treasury_blackgold_address = get_associated_token_address(&treasury_address, &MINT_ADDRESS);
     let treasury_sol_address = get_associated_token_address(&treasury_address, &SOL_MINT);
-    let stake_treasury_address = ore_stake_api::state::treasury_pda().0;
-    let stake_treasury_ore_address =
+    let stake_treasury_address = blackgold_stake_api::state::treasury_pda().0;
+    let stake_treasury_blackgold_address =
         get_associated_token_address(&stake_treasury_address, &MINT_ADDRESS);
-    let stake_vesting_address = ore_stake_api::state::vesting_pda().0;
+    let stake_vesting_address = blackgold_stake_api::state::vesting_pda().0;
     let mut accounts = vec![
         AccountMeta::new(signer, true),
         AccountMeta::new(board_address, false),
         AccountMeta::new_readonly(config_address, false),
         AccountMeta::new(mint_address, false),
         AccountMeta::new(treasury_address, false),
-        AccountMeta::new(treasury_ore_address, false),
+        AccountMeta::new(treasury_blackgold_address, false),
         AccountMeta::new(treasury_sol_address, false),
         AccountMeta::new(stake_treasury_address, false),
-        AccountMeta::new(stake_treasury_ore_address, false),
+        AccountMeta::new(stake_treasury_blackgold_address, false),
         AccountMeta::new(stake_vesting_address, false),
         AccountMeta::new_readonly(spl_token::ID, false),
         AccountMeta::new_readonly(crate::ID, false),
-        AccountMeta::new_readonly(ore_stake_api::ID, false),
+        AccountMeta::new_readonly(blackgold_stake_api::ID, false),
     ];
     for account in swap_accounts.iter() {
         let mut acc_clone = account.clone();
@@ -209,13 +209,13 @@ pub fn bury(signer: Pubkey, amount: u64) -> Instruction {
     let sender_address = get_associated_token_address(&signer, &MINT_ADDRESS);
     let mint_address = MINT_ADDRESS;
     let treasury_address = treasury_pda().0;
-    let treasury_ore_address = get_associated_token_address(&treasury_address, &MINT_ADDRESS);
-    let stake_treasury_address = ore_stake_api::state::treasury_pda().0;
-    let stake_treasury_ore_address =
+    let treasury_blackgold_address = get_associated_token_address(&treasury_address, &MINT_ADDRESS);
+    let stake_treasury_address = blackgold_stake_api::state::treasury_pda().0;
+    let stake_treasury_blackgold_address =
         get_associated_token_address(&stake_treasury_address, &MINT_ADDRESS);
-    let stake_vesting_address = ore_stake_api::state::vesting_pda().0;
+    let stake_vesting_address = blackgold_stake_api::state::vesting_pda().0;
     let token_program = spl_token::ID;
-    let ore_program = crate::ID;
+    let blackgold_program = crate::ID;
     Instruction {
         program_id: crate::ID,
         accounts: vec![
@@ -224,13 +224,13 @@ pub fn bury(signer: Pubkey, amount: u64) -> Instruction {
             AccountMeta::new(board_address, false),
             AccountMeta::new(mint_address, false),
             AccountMeta::new(treasury_address, false),
-            AccountMeta::new(treasury_ore_address, false),
+            AccountMeta::new(treasury_blackgold_address, false),
             AccountMeta::new(stake_treasury_address, false),
-            AccountMeta::new(stake_treasury_ore_address, false),
+            AccountMeta::new(stake_treasury_blackgold_address, false),
             AccountMeta::new(stake_vesting_address, false),
             AccountMeta::new_readonly(token_program, false),
-            AccountMeta::new_readonly(ore_program, false),
-            AccountMeta::new_readonly(ore_stake_api::ID, false),
+            AccountMeta::new_readonly(blackgold_program, false),
+            AccountMeta::new_readonly(blackgold_stake_api::ID, false),
         ],
         data: Bury {
             amount: amount.to_le_bytes(),
@@ -280,7 +280,7 @@ pub fn reset(
     let treasury_address = treasury_pda().0;
     let treasury_tokens_address = treasury_tokens_address();
     let entropy_var_address = entropy_api::state::var_pda(board_address, 0).0;
-    let mint_authority_address = ore_mint_api::state::authority_pda().0;
+    let mint_authority_address = blackgold_mint_api::state::authority_pda().0;
     Instruction {
         program_id: crate::ID,
         accounts: vec![
@@ -303,7 +303,7 @@ pub fn reset(
             AccountMeta::new_readonly(entropy_api::ID, false),
             // Mint accounts.
             AccountMeta::new(mint_authority_address, false),
-            AccountMeta::new_readonly(ore_mint_api::ID, false),
+            AccountMeta::new_readonly(blackgold_mint_api::ID, false),
         ],
         data: Reset {}.to_bytes(),
     }

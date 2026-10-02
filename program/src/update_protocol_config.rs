@@ -1,4 +1,4 @@
-use ore_api::prelude::*;
+use blackgold_api::prelude::*;
 use steel::*;
 
 /// Sets the admin.
@@ -19,8 +19,8 @@ pub fn process_update_protocol_config(accounts: &[AccountInfo<'_>], data: &[u8])
     };
     signer_info.is_signer()?.has_address(&ADMIN_ADDRESS)?;
     let config = config_info
-        .has_seeds(&[CONFIG], &ore_api::ID)?
-        .as_account_mut::<Config>(&ore_api::ID)?;
+        .has_seeds(&[CONFIG], &blackgold_api::ID)?
+        .as_account_mut::<Config>(&blackgold_api::ID)?;
     system_program.is_program(&system_program::ID)?;
 
     // Set protocol config.
