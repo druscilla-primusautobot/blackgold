@@ -10,6 +10,7 @@ use steel::*;
 /// Percentage of treasury SOL to send to the liq manager (whole unit, denominator 100).
 const LIQ_PCT: u64 = 10;
 
+//& DRUSCILLA - Update these addresses with the correct values (DONE)
 /// The liq manager address.
 const LIQ_MANAGER: Pubkey = pubkey!("PcKJmf4dXbT52bNA6Byw5EpjaP6XPs8ZUXCFLTBQBGD");
 

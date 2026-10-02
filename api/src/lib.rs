@@ -16,5 +16,5 @@ pub mod prelude {
 
 use steel::*;
 
-//TODO DRUSCILLA - Update this with the correct program id
-declare_id!("oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv");
+//& DRUSCILLA - Update this with the correct program id (DONE)
+declare_id!("BGLDo13PkM4ZKJhQrb8WAda8wV86LHVCsFPKoy4ShQTi");

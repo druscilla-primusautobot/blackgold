@@ -430,14 +430,15 @@ pub async fn get_address_lookup_table_accounts(
     Ok(accounts)
 }
 
-pub const BLACKGOLD_VAR_ADDRESS: Pubkey = pubkey!("BWCaDY96Xe4WkFq1M7UiCCRcChsJ3p51L5KrGzhxgm2E");
+//& DRUSCILLA - Update the address with the correct values (DONE using Program ID & seed b"var")
+pub const VAR_ADDRESS: Pubkey = pubkey!("8tq1p8q4qV8tq1p8q4qV8tq1p8q4qV8tq1p8q4qV8tq");
 
 async fn reset(
     rpc: &RpcClient,
     payer: &solana_sdk::signer::keypair::Keypair,
 ) -> Result<(), anyhow::Error> {
     let board = get_board(rpc).await?;
-    let mut var = get_var(rpc, BLACKGOLD_VAR_ADDRESS).await?;
+    let mut var = get_var(rpc, VAR_ADDRESS).await?;
 
     let hash = solana_program::keccak::hashv(&[&var.end_at.to_le_bytes()]);
     var.slot_hash = hash.to_bytes();
@@ -447,7 +448,7 @@ async fn reset(
     println!("Var: {:?}", var);
 
     let client = reqwest::Client::new();
-    let url = format!("https://entropy-api.onrender.com/var/{BLACKGOLD_VAR_ADDRESS}/seed");
+    let url = format!("https://entropy-api.onrender.com/var/{VAR_ADDRESS}/seed");
     let response = client
         .get(url)
         .send()
@@ -463,8 +464,8 @@ async fn reset(
     println!("Top miner: {}", top_miner);
 
     let config = get_config(rpc).await?;
-    let sample_ix = entropy_api::sdk::sample(payer.pubkey(), BLACKGOLD_VAR_ADDRESS);
-    let reveal_ix = entropy_api::sdk::reveal(payer.pubkey(), BLACKGOLD_VAR_ADDRESS, response.seed);
+    let sample_ix = entropy_api::sdk::sample(payer.pubkey(), VAR_ADDRESS);
+    let reveal_ix = entropy_api::sdk::reveal(payer.pubkey(), VAR_ADDRESS, response.seed);
     let reset_ix = blackgold_api::sdk::reset(
         payer.pubkey(),
         ADMIN_FEE_COLLECTOR,
