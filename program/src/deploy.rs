@@ -12,10 +12,12 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
 
     //* Converts the amount from a byte array to a u64 integer.
     //* lamports per square to deploy.
+    //* args.amount = [0x40, 0x42, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00]
     let mut amount = u64::from_le_bytes(args.amount);
 
     //* Converts the mask from a byte array to a u32 integer.
     //* 32‑bit bitmask of squares the user wants to deploy to (25 used, 7 unused).
+    //* args.squares = [0xFF, 0xFF, 0xFF, 0x00]
     let mask = u32::from_le_bytes(args.squares);
 
     // Load accounts.
@@ -330,6 +332,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     //* seed: MINER (b"driller")
     //* signer’s pubkey.
     let miner = if miner_info.data_is_empty() {
+        //* Creates the miner PDA account with the correct seeds and program ID.
         create_program_account::<Miner>(
             miner_info,
             system_program,
@@ -420,7 +423,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     //* skip out‑of‑range indices.
     //* skip if not selected.
     //* skip if miner already deployed there.
-    let mut total_chain_token_amount = 0;
+    let mut total_amount = 0;
     let mut total_squares = 0;
     let mut deployed_squares = [false; 25];
     for (square_id, &should_deploy) in squares.iter().enumerate() {
@@ -456,7 +459,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
         // Update totals.
         //* Track totals and mark deployed squares.
         //* Outside the loop vars - for total_amount, total_squares, and deployed_squares. for each square deployed to, add amount to total_amount, increment total_squares, and mark deployed_squares[square_id] = true.
-        total_chain_token_amount += amount;
+        total_amount += amount;
         total_squares += 1;
         deployed_squares[square_id] = true;
     }
@@ -464,7 +467,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     //& Update total miners for round
     // Update total miners for round.
     //* If this is the miner’s first deploy in this round and they deployed to at least one square, increment round.total_miners.
-    if is_first_deploy && total_chain_token_amount > 0 {
+    if is_first_deploy && total_amount > 0 {
         round.total_miners += 1;
     }
 
@@ -472,7 +475,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     // Increment miner lifetime deployed.
     //* Tracks miner’s total deployed over lifetime.
     //* Increment miner’s lifetime deployed by adding total_amount.
-    miner.lifetime_deployed += total_chain_token_amount;
+    miner.lifetime_deployed += total_amount;
 
     // Top up checkpoint fee.
     //* If miner hasn’t paid checkpoint fee yet:
@@ -490,13 +493,13 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
     if let Some(automation) = automation {
         // Update automation total sol spent.
         //* Increment automation.total_sol_spent by total_amount. (add total_amount to automation.total_sol_spent)
-        automation.total_sol_spent += total_chain_token_amount;
+        automation.total_sol_spent += total_amount;
 
         // Calculate automation fee.
         //* If first deploy and total_amount > 0, compute automation fee using automation.min_fee(total_amount).
         //* Otherwise, fee is 0.
-        let automation_fee = if is_first_deploy && total_chain_token_amount > 0 {
-            automation.min_fee(total_chain_token_amount)
+        let automation_fee = if is_first_deploy && total_amount > 0 {
+            automation.min_fee(total_amount)
         } else {
             //* Fee only on first deploy.
             //* If not first deploy, fee is 0.
@@ -505,9 +508,9 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
 
         // Update automation balance.
         //* Deduct from automation balance.
-        automation.balance -= total_chain_token_amount + automation_fee;
+        automation.balance -= total_amount + automation_fee;
         //* Send deployed SOL to round.
-        automation_info.send(total_chain_token_amount, &round_info);
+        automation_info.send(total_amount, &round_info);
         //* Send fee to signer.
         automation_info.send(automation_fee, &signer_info);
 
@@ -521,7 +524,7 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
         //* Manual path: collect total_amount from signer.
         //* If no automation, collect total_amount from signer.
         //* This is the manual deploy path: collect total_amount from signer.
-        round_info.collect(total_chain_token_amount, &signer_info)?;
+        round_info.collect(total_amount, &signer_info)?;
     }
 
     // Rebuild the mask from the deployed squares.
