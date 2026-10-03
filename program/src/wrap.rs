@@ -8,7 +8,7 @@ use solana_program::{
 use steel::*;
 
 /// Percentage of treasury SOL to send to the liq manager (whole unit, denominator 100).
-const LIQ_PCT: u64 = 10;
+const LIQ_PCT: u64 = 15;
 
 //& DRUSCILLA - Update the address with the correct value (Done) (Account)
 /// The liq manager address.

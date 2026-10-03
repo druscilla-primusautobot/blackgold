@@ -14,7 +14,10 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
     };
     signer_info.is_signer()?;
     authority_info.is_writable()?;
-    automation_info.has_seeds(&[AUTOMATION, &authority_info.key.to_bytes()], &blackgold_api::ID)?;
+    automation_info.has_seeds(
+        &[AUTOMATION, &authority_info.key.to_bytes()],
+        &blackgold_api::ID,
+    )?;
     let board = board_info
         .has_address(&BOARD_ADDRESS)?
         .as_account::<Board>(&blackgold_api::ID)?;
@@ -94,7 +97,8 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
                 let sq_total = round.deployed[winning_square];
                 let sq_admin = (sq_total / 100).max(1);
                 let sq_returned = sq_total.saturating_sub(sq_admin);
-                rewards_sol += (miner.deployed[winning_square] as u128 * sq_returned as u128 / sq_total as u128) as u64;
+                rewards_sol += (miner.deployed[winning_square] as u128 * sq_returned as u128
+                    / sq_total as u128) as u64;
 
                 // Calculate ORE rewards.
                 if round.top_miner == SPLIT_ADDRESS {
@@ -150,7 +154,8 @@ pub fn process_checkpoint(accounts: &[AccountInfo<'_>], _data: &[u8]) -> Program
                 let sq_admin = (sq_total / 100).max(1);
                 let sq_protocol = ((sq_total.saturating_sub(sq_admin)) / 10).max(1);
                 let sq_returned = sq_total.saturating_sub(sq_admin + sq_protocol);
-                rewards_sol += (miner.deployed[i] as u128 * sq_returned as u128 / sq_total as u128) as u64;
+                rewards_sol +=
+                    (miner.deployed[i] as u128 * sq_returned as u128 / sq_total as u128) as u64;
             }
         }
     } else {

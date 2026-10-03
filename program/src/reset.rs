@@ -1,4 +1,4 @@
-use entropy_api::state::Var;
+use entropy_api::state::Var; //TEMPORARY
 use blackgold_api::prelude::*;
 use blackgold_mint_api::consts::MAX_SUPPLY;
 use solana_program::{keccak, log::sol_log};

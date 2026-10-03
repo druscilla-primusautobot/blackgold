@@ -53,7 +53,9 @@ pub fn process_instruction(
         BlackGoldInstruction::Bury => process_bury(accounts, data)?,
         BlackGoldInstruction::Wrap => process_wrap(accounts, data)?,
         BlackGoldInstruction::NewVar => process_new_var(accounts, data)?,
-        BlackGoldInstruction::UpdateProtocolConfig => process_update_protocol_config(accounts, data)?,
+        BlackGoldInstruction::UpdateProtocolConfig => {
+            process_update_protocol_config(accounts, data)?
+        }
         BlackGoldInstruction::Liq => return Err(ProgramError::InvalidInstructionData),
     }
 
