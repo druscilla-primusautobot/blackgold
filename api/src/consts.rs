@@ -70,7 +70,7 @@ pub const TREASURY: &[u8] = b"vault";
 
 //& DRUSCILLA - Update these addresses with the correct values (DONE)
 /// The address of the mint account.
-pub const MINT_ADDRESS: Pubkey = pubkey!("84TC6beTFTArdyHhzh9uhC1Pq76fEodw1E4NnNTS9RqC");
+pub const MINT_ADDRESS: Pubkey = pubkey!("BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN");
 
 /// The address of the sol mint account.
 pub const SOL_MINT: Pubkey = pubkey!("So11111111111111111111111111111111111111112");
@@ -113,10 +113,10 @@ pub const VAR_ADDRESS: Pubkey = pubkey!("4SJyzysuh5ZAGDoQhwDhxXtdv8CKV5gu2vek9V3
 pub const BURY_AUTHORITY: Pubkey = pubkey!("yN7fRmHmbfMbntVQMtCCepjKmWaFxyZHxoxxRDKoBGD");
 
 //& DRUSCILLA - Update the address with the correct value (Done) (PDA)
-/// The address of the board account. 
+/// The address of the board account.
 pub const BOARD_ADDRESS: Pubkey = pubkey!("ECLj9KXS6P8M7Ywu6WkJmftX2Qaycnih7CsNsQdH2joF");
 
-//& DRUSCILLA - Update the address with the correct value (Done) (PDA) 
+//& DRUSCILLA - Update the address with the correct value (Done) (PDA)
 /// The address of the treasury account.
 pub const TREASURY_ADDRESS: Pubkey = pubkey!("FGzg9ihT7mkFPfFaL4BGwSZ3e4hX5xKQMMrt7Vg7L9tp");
 

@@ -1,6 +1,6 @@
 {
     "version": "4.0.0",
-    "name": "ore",
+    "name": "blackgold",
     "instructions": [
         {
             "name": "automate",
@@ -72,7 +72,7 @@
             },
             "docs": [
                 "Settles miner rewards for a completed round.",
-                "Treasury PDA seeds: [\"treasury\"]."
+                "Treasury PDA seeds: [\"vault\"]."
             ],
             "accounts": [
                 {
@@ -141,22 +141,22 @@
                     "address": "11111111111111111111111111111111"
                 },
                 {
-                    "name": "oreProgram",
+                    "name": "blackgoldProgram",
                     "isMut": false,
                     "isSigner": false,
-                    "address": "oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv"
+                    "address": "BGLDo13PkM4ZKJhQrb8WAda8wV86LHVCsFPKoy4ShQTi"
                 }
             ],
             "args": []
         },
         {
-            "name": "claimOre",
+            "name": "claimBlackgold",
             "discriminant": {
                 "type": "u8",
                 "value": 4
             },
             "docs": [
-                "Claims ORE token rewards from the treasury vault."
+                "Claims Blackgold token rewards from the treasury vault."
             ],
             "accounts": [
                 {
@@ -178,7 +178,7 @@
                     "name": "mint",
                     "isMut": false,
                     "isSigner": false,
-                    "address": "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp"
+                    "address": "BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN"
                 },
                 {
                     "name": "recipient",
@@ -214,10 +214,10 @@
                     "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
                 },
                 {
-                    "name": "oreProgram",
+                    "name": "blackgoldProgram",
                     "isMut": false,
                     "isSigner": false,
-                    "address": "oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv"
+                    "address": "BGLDo13PkM4ZKJhQrb8WAda8wV86LHVCsFPKoy4ShQTi"
                 }
             ],
             "args": []
@@ -230,8 +230,8 @@
             },
             "docs": [
                 "Closes an expired round account and returns rent to the payer.",
-                "Round PDA seeds: [\"round\", round_id].",
-                "Treasury PDA seeds: [\"treasury\"]."
+                "Round PDA seeds: [\"cycle\", round_id].",
+                "Treasury PDA seeds: [\"vault\"]."
             ],
             "accounts": [
                 {
@@ -278,8 +278,8 @@
                 "Deploys SOL to selected squares for the current round.",
                 "Automation PDA seeds: [\"automation\", authority].",
                 "Config PDA seeds: [\"config\"].",
-                "Miner PDA seeds: [\"miner\", authority].",
-                "Round PDA seeds: [\"round\", board.round_id]."
+                "Miner PDA seeds: [\"driller\", authority].",
+                "Round PDA seeds: [\"cycle\", board.round_id]."
             ],
             "accounts": [
                 {
@@ -324,10 +324,10 @@
                     "address": "11111111111111111111111111111111"
                 },
                 {
-                    "name": "oreProgram",
+                    "name": "blackgoldProgram",
                     "isMut": false,
                     "isSigner": false,
-                    "address": "oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv"
+                    "address": "BGLDo13PkM4ZKJhQrb8WAda8wV86LHVCsFPKoy4ShQTi"
                 },
                 {
                     "name": "entropyVar",
@@ -380,8 +380,8 @@
             "docs": [
                 "Finalizes the current round, mints rewards, and opens the next round.",
                 "Board PDA seeds: [\"board\"].",
-                "Treasury PDA seeds: [\"treasury\"].",
-                "Round PDA seeds: [\"round\", board.round_id] and [\"round\", board.round_id + 1]."
+                "Treasury PDA seeds: [\"vault\"].",
+                "Round PDA seeds: [\"cycle\", board.round_id] and [\"cycle\", board.round_id + 1]."
             ],
             "accounts": [
                 {
@@ -408,7 +408,7 @@
                     "name": "mint",
                     "isMut": true,
                     "isSigner": false,
-                    "address": "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp"
+                    "address": "BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN"
                 },
                 {
                     "name": "round",
@@ -448,10 +448,10 @@
                     "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
                 },
                 {
-                    "name": "oreProgram",
+                    "name": "blackgoldProgram",
                     "isMut": false,
                     "isSigner": false,
-                    "address": "oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv"
+                    "address": "BGLDo13PkM4ZKJhQrb8WAda8wV86LHVCsFPKoy4ShQTi"
                 },
                 {
                     "name": "slotHashesSysvar",
@@ -480,8 +480,8 @@
                 "value": 13
             },
             "docs": [
-                "Burns ORE and distributes yield to stakers.",
-                "Treasury PDA seeds: [\"treasury\"]."
+                "Burns BlackGold tokens and distributes yield to stakers.",
+                "Treasury PDA seeds: [\"vault\"]."
             ],
             "accounts": [
                 {
@@ -503,7 +503,7 @@
                     "name": "mint",
                     "isMut": true,
                     "isSigner": false,
-                    "address": "oreoU2P8bN6jkk3jbaiVxYnG1dCXcYxwhwyK9jSybcp"
+                    "address": "BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN"
                 },
                 {
                     "name": "treasury",
@@ -537,13 +537,13 @@
                     "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
                 },
                 {
-                    "name": "oreProgram",
+                    "name": "blackgoldProgram",
                     "isMut": false,
                     "isSigner": false,
-                    "address": "oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv"
+                    "address": "BGLDo13PkM4ZKJhQrb8WAda8wV86LHVCsFPKoy4ShQTi"
                 },
                 {
-                    "name": "oreStakeProgram",
+                    "name": "blackgoldStakeProgram",
                     "isMut": false,
                     "isSigner": false
                 }
@@ -563,7 +563,7 @@
             },
             "docs": [
                 "Wraps SOL held by the treasury into WSOL for swapping.",
-                "Treasury PDA seeds: [\"treasury\"]."
+                "Treasury PDA seeds: [\"vault\"]."
             ],
             "accounts": [
                 {
@@ -903,15 +903,15 @@
                         "type": "u64"
                     },
                     {
-                        "name": "refined_ore",
+                        "name": "refined_blackgold",
                         "type": "u64"
                     },
                     {
-                        "name": "rewards_ore",
+                        "name": "rewards_blackgold",
                         "type": "u64"
                     },
                     {
-                        "name": "last_claim_ore_at",
+                        "name": "last_claim_blackgold_at",
                         "type": "i64"
                     },
                     {
@@ -919,7 +919,7 @@
                         "type": "i64"
                     },
                     {
-                        "name": "lifetime_rewards_ore",
+                        "name": "lifetime_rewards_blackgold",
                         "type": "u64"
                     },
                     {
@@ -1265,12 +1265,12 @@
                     "index": false
                 },
                 {
-                    "name": "ore_buried",
+                    "name": "blackgold_buried",
                     "type": "u64",
                     "index": false
                 },
                 {
-                    "name": "ore_shared",
+                    "name": "blackgold_shared",
                     "type": "u64",
                     "index": false
                 },
@@ -1445,7 +1445,7 @@
         }
     ],
     "metadata": {
-        "address": "oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv",
-        "origin": "steel"
+        "address": "BGLDo13PkM4ZKJhQrb8WAda8wV86LHVCsFPKoy4ShQTi",
+        "origin": "blackgold"
     }
 }

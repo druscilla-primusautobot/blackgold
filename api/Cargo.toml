@@ -1,5 +1,5 @@
 [package]
-name = "ore-api"
+name = "blackgold-api"
 description.workspace = true
 version.workspace = true
 edition.workspace = true
