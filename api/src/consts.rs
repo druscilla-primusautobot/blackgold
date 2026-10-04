@@ -106,7 +106,8 @@ pub const SWAP_PROGRAM: Pubkey = pubkey!("JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNy
 
 //& DRUSCILLA - Update these addresses with the correct values (Done) (using Program_ID & seed b"var") (PDA)
 /// The address of the var account.
-pub const VAR_ADDRESS: Pubkey = pubkey!("4SJyzysuh5ZAGDoQhwDhxXtdv8CKV5gu2vek9V39eq5K");
+pub const VAR_ADDRESS: Pubkey = pubkey!("A7jpqQsy4HA5Q6L6Gt1UDbKAx6r4391PkBa41M8wu7Da");
+// pub const VAR_ADDRESS: Pubkey = pubkey!("4SJyzysuh5ZAGDoQhwDhxXtdv8CKV5gu2vek9V39eq5K");
 
 //& DRUSCILLA - Update these addresses with the correct values (Done) (Account)
 /// The address which can call the bury and wrap instructions.

@@ -431,7 +431,8 @@ pub async fn get_address_lookup_table_accounts(
 }
 
 //& DRUSCILLA - Update the address with the correct values (DONE using Program ID & seed b"var")
-pub const VAR_ADDRESS: Pubkey = pubkey!("8tq1p8q4qV8tq1p8q4qV8tq1p8q4qV8tq1p8q4qV8tq");
+pub const VAR_ADDRESS: Pubkey = pubkey!("A7jpqQsy4HA5Q6L6Gt1UDbKAx6r4391PkBa41M8wu7Da");
+// pub const VAR_ADDRESS: Pubkey = pubkey!("8tq1p8q4qV8tq1p8q4qV8tq1p8q4qV8tq1p8q4qV8tq");
 
 async fn reset(
     rpc: &RpcClient,
@@ -464,8 +465,8 @@ async fn reset(
     println!("Top miner: {}", top_miner);
 
     let config = get_config(rpc).await?;
-    let sample_ix = entropy_api::sdk::sample(payer.pubkey(), VAR_ADDRESS);
-    let reveal_ix = entropy_api::sdk::reveal(payer.pubkey(), VAR_ADDRESS, response.seed);
+    let sample_ix = blackgold_entropy_api::sdk::sample(payer.pubkey(), VAR_ADDRESS);
+    let reveal_ix = blackgold_entropy_api::sdk::reveal(payer.pubkey(), VAR_ADDRESS, response.seed);
     let reset_ix = blackgold_api::sdk::reset(
         payer.pubkey(),
         ADMIN_FEE_COLLECTOR,
@@ -480,7 +481,7 @@ async fn reset(
 
 async fn calculate_top_miner(
     rpc: &RpcClient,
-    var: &entropy_api::state::Var,
+    var: &blackgold_entropy_api::state::Var,
     seed: [u8; 32],
     round_id: u64,
 ) -> Result<Pubkey, anyhow::Error> {

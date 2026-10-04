@@ -27,11 +27,11 @@ pub fn process_new_var(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResu
             |c| c.protocol.authority == *signer_info.key,
             BlackgoldError::NotAuthorized.into(),
         )?;
-    entropy_program.is_program(&entropy_api::ID)?;
+    entropy_program.is_program(&blackgold_entropy_api::ID)?;
     system_program.is_program(&system_program::ID)?;
 
     invoke_signed(
-        &entropy_api::sdk::open(
+        &blackgold_entropy_api::sdk::open(
             *board_info.key,
             *signer_info.key,
             id,
@@ -48,7 +48,7 @@ pub fn process_new_var(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResu
             var_info.clone(),
             system_program.clone(),
         ],
-        &entropy_api::ID,
+        &blackgold_entropy_api::ID,
         &[BOARD],
     )?;
 
