@@ -12,7 +12,7 @@ keywords.workspace = true
 [dependencies]
 base64.workspace = true
 bytemuck.workspace = true
-entropy-api.workspace = true
+blackgold-entropy-api.workspace = true
 num_enum.workspace = true
 blackgold-mint-api.workspace = true
 blackgold-stake-api.workspace = true

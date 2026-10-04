@@ -121,19 +121,19 @@ pub fn process_deploy(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResul
         //* entropy_program is the correct program.
         var_info
             .has_address(&VAR_ADDRESS)?
-            .as_account::<Var>(&entropy_api::ID)?
+            .as_account::<Var>(&blackgold_entropy_api::ID)?
             .assert(|v| v.authority == *board_info.key)?;
-        entropy_program.is_program(&entropy_api::ID)?;
+        entropy_program.is_program(&blackgold_entropy_api::ID)?;
 
         // Bump var to the next value.
-        //* Calls entropy_api::sdk::next to bump the var to the next randomness value, keyed by board.end_slot.
+        //* Calls blackgold_entropy_api::sdk::next to bump the var to the next randomness value, keyed by board.end_slot.
         //* Signs with the BOARD PDA seed.
         //* This is the “advance randomness” step for the round.
         //* This whole block is the “round start + randomness bump” logic.
         invoke_signed(
-            &entropy_api::sdk::next(*board_info.key, *var_info.key, board.end_slot),
+            &blackgold_entropy_api::sdk::next(*board_info.key, *var_info.key, board.end_slot),
             &[board_info.clone(), var_info.clone()],
-            &entropy_api::ID,
+            &blackgold_entropy_api::ID,
             &[BOARD],
         )?;
     }

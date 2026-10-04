@@ -1,0 +1,14 @@
+[package]
+name = "blackgold-entropy-types"
+version = "0.0.1"
+edition = "2021"
+description = "Shared types for BlackGold entropy protocol"
+license = "MIT"
+repository = "https://github.com//blackgold-entropy-types"
+keywords = ["solana", "entropy", "blackgold"]
+
+[dependencies]
+borsh = "0.10"
+bytemuck = "1.14"
+bytemuck_derive = "1.7"
+num_enum = "0.7"

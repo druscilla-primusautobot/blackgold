@@ -19,7 +19,7 @@ default = []
 
 [dependencies]
 bincode.workspace = true
-entropy-api.workspace = true
+blackgold-entropy-api.workspace = true
 blackgold-api.workspace = true
 blackgold-stake-api.workspace = true
 blackgold-mint-api.workspace = true

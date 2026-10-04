@@ -1,4 +1,4 @@
-use entropy_api::state::Var; //TEMPORARY
+use blackgols_entropy_api::state::Var; //TEMPORARY
 use blackgold_api::prelude::*;
 use blackgold_mint_api::consts::MAX_SUPPLY;
 use solana_program::{keccak, log::sol_log};
@@ -77,12 +77,12 @@ pub fn process_reset(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     };
     let var = var_info
         .has_address(&VAR_ADDRESS)?
-        .as_account::<Var>(&entropy_api::ID)?
+        .as_account::<Var>(&blackgold_entropy_api::ID)?
         .assert(|v| v.authority == *board_info.key)?
         .assert(|v| v.slot_hash != [0; 32])?
         .assert(|v| v.seed != [0; 32])?
         .assert(|v| v.value != [0; 32])?;
-    entropy_program.is_program(&entropy_api::ID)?;
+    entropy_program.is_program(&blackgold_entropy_api::ID)?;
 
     // Print the seed and slot hash.
     let seed = keccak::Hash::new_from_array(var.seed);

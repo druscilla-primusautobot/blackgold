@@ -120,7 +120,7 @@ pub fn deploy(
     let miner_address = miner_pda(authority).0;
     let round_address = round_pda(round_id).0;
     let treasury_address = treasury_pda().0;
-    let entropy_var_address = entropy_api::state::var_pda(board_address, 0).0;
+    let entropy_var_address = blackgold_entropy_api::state::var_pda(board_address, 0).0;
 
     // Convert array of 25 booleans into a 32-bit mask where each bit represents whether
     // that square index is selected (1) or not (0)
@@ -146,7 +146,7 @@ pub fn deploy(
             AccountMeta::new_readonly(crate::ID, false),
             // Entropy accounts.
             AccountMeta::new(entropy_var_address, false),
-            AccountMeta::new_readonly(entropy_api::ID, false),
+            AccountMeta::new_readonly(blackgold_entropy_api::ID, false),
         ],
         data: Deploy {
             amount: amount.to_le_bytes(),
@@ -279,7 +279,7 @@ pub fn reset(
     let top_miner_address = miner_pda(top_miner).0;
     let treasury_address = treasury_pda().0;
     let treasury_tokens_address = treasury_tokens_address();
-    let entropy_var_address = entropy_api::state::var_pda(board_address, 0).0;
+    let entropy_var_address = blackgold_entropy_api::state::var_pda(board_address, 0).0;
     let mint_authority_address = blackgold_mint_api::state::authority_pda().0;
     Instruction {
         program_id: crate::ID,
@@ -300,7 +300,7 @@ pub fn reset(
             AccountMeta::new_readonly(sysvar::slot_hashes::ID, false),
             // Entropy accounts.
             AccountMeta::new(entropy_var_address, false),
-            AccountMeta::new_readonly(entropy_api::ID, false),
+            AccountMeta::new_readonly(blackgold_entropy_api::ID, false),
             // Mint accounts.
             AccountMeta::new(mint_authority_address, false),
             AccountMeta::new_readonly(blackgold_mint_api::ID, false),
@@ -393,7 +393,7 @@ pub fn new_var(
 ) -> Instruction {
     let board_address = board_pda().0;
     let config_address = config_pda().0;
-    let var_address = entropy_api::state::var_pda(board_address, id).0;
+    let var_address = blackgold_entropy_api::state::var_pda(board_address, id).0;
     Instruction {
         program_id: crate::ID,
         accounts: vec![
@@ -403,7 +403,7 @@ pub fn new_var(
             AccountMeta::new(provider, false),
             AccountMeta::new(var_address, false),
             AccountMeta::new_readonly(system_program::ID, false),
-            AccountMeta::new_readonly(entropy_api::ID, false),
+            AccountMeta::new_readonly(blackgold_entropy_api::ID, false),
         ],
         data: NewVar {
             id: id.to_le_bytes(),
