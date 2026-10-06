@@ -70,7 +70,7 @@ pub const TREASURY: &[u8] = b"vault";
 
 //& DRUSCILLA - Update these addresses with the correct values (DONE)
 /// The address of the mint account.
-pub const MINT_ADDRESS: Pubkey = pubkey!("BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN");
+pub const MINT_ADDRESS: Pubkey = pubkey!("BLKGmSnWUj7EYirCirqgnS1Wvi3JwbCbHk2Ws2baLuNt");
 
 /// The address of the sol mint account.
 pub const SOL_MINT: Pubkey = pubkey!("So11111111111111111111111111111111111111112");

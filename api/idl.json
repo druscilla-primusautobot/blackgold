@@ -178,7 +178,7 @@
                     "name": "mint",
                     "isMut": false,
                     "isSigner": false,
-                    "address": "BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN"
+                    "address": "BLKGmSnWUj7EYirCirqgnS1Wvi3JwbCbHk2Ws2baLuNt"
                 },
                 {
                     "name": "recipient",
@@ -408,7 +408,7 @@
                     "name": "mint",
                     "isMut": true,
                     "isSigner": false,
-                    "address": "BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN"
+                    "address": "BLKGmSnWUj7EYirCirqgnS1Wvi3JwbCbHk2Ws2baLuNt"
                 },
                 {
                     "name": "round",
@@ -503,7 +503,7 @@
                     "name": "mint",
                     "isMut": true,
                     "isSigner": false,
-                    "address": "BGLDwrD9HdVUF2WvMjPV9a5RtrG2nwDbsxe3bDLXvtbN"
+                    "address": "BLKGmSnWUj7EYirCirqgnS1Wvi3JwbCbHk2Ws2baLuNt"
                 },
                 {
                     "name": "treasury",
